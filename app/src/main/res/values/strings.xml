@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">Wegitantion index counter</string>
+    <string name="app_name">Vegetation Index Counter</string>
+    <string name="button2">RotateOn</string>
+    <string name="text1">Something</string>
 </resources>
