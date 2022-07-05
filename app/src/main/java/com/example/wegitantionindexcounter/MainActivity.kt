@@ -1,5 +1,6 @@
 package com.example.wegitantionindexcounter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -8,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
+import android.view.KeyEvent
 import android.view.MotionEvent
 import androidx.preference.PreferenceManager
 import android.view.View
@@ -15,13 +17,16 @@ import android.widget.Button
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.toColor
 import androidx.core.graphics.toColorLong
 import com.example.wegitantionindexcounter.databinding.ActivityMainBinding
 import org.osmdroid.api.IMapController
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.views.MapView
 import org.osmdroid.config.Configuration.*
+import org.osmdroid.events.MapListener
 import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.ScaleBarOverlay
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
 
@@ -43,13 +48,38 @@ class MainActivity : AppCompatActivity() {
         setMapDefaults(map)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onResume() {
         super.onResume()
         val rotateBtn = RotateMapBtn(map, binding.button2, this)
         binding.button2.setOnClickListener {
-            Log.d("TAG", "button2")
             rotateBtn.pressButton()
         }
+        val markerBtn = MarkerMapBtn(map, binding.button3, this)
+        binding.button3.setOnClickListener {
+            markerBtn.pressButton()
+        }
+        map.addMapListener(MapListener())
+        map.setOnGenericMotionListener{
+            view, event ->
+            val x = event.x
+            val y = event.y
+            Log.d("TAG", "$x $y")
+            true
+        }
+
+        /*map.setOnTouchListener {
+                _, event ->
+
+            /*if(!markerBtn.isEnabled){
+                true
+            }*/
+            val x = event.x
+            val y = event.y
+            Log.d("TAG", "$x $y")
+           // markerBtn.setMarker(x, y)
+            false
+        }*/
         map.onResume()
     }
 
@@ -91,19 +121,27 @@ class MainActivity : AppCompatActivity() {
         mapController.setCenter(startPointAhrangelsk);
     }
 
-    class RotateMapBtn(_map : MapView, _btn : Button, _context : Context) {
-        private val context = _context
-        private val rButton = _btn
-        private val map = _map
-        private var IsEnabled = false
-        fun pressButton() {
-            if(IsEnabled) {
+    open class MapBtn(_map : MapView, _btn : Button, _context : Context) {
+        protected val context = _context
+        protected val rButton = _btn
+        protected val map = _map
+        var isEnabled = false
+        get() {
+            return isEnabled
+        }
+        open fun pressButton() {
+
+        }
+    }
+    class RotateMapBtn(_map : MapView, _btn : Button, _context : Context) : MapBtn(_map, _btn, _context) {
+        override fun pressButton() {
+            if(isEnabled) {
                 disableMapRotate()
-                IsEnabled = false
+                isEnabled = false
             }
             else {
                 enableMapRotate()
-                IsEnabled = true
+                isEnabled = true
             }
         }
         private fun enableMapRotate() {
@@ -115,6 +153,28 @@ class MainActivity : AppCompatActivity() {
         private fun disableMapRotate() {
             map.overlays.removeAt(map.overlays.size - 1)
             rButton.compoundDrawableTintList = ColorStateList.valueOf(Color.argb(100,0,0,0))
+        }
+    }
+    class MarkerMapBtn(_map : MapView, _btn : Button, _context : Context) : MapBtn(_map, _btn, _context) {
+        override fun pressButton() {
+            if(isEnabled) {
+                disableMarkers()
+                isEnabled = false
+            }
+            else {
+                enableMarkers()
+                isEnabled = true
+            }
+        }
+        private fun enableMarkers() {
+            rButton.compoundDrawableTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.purple_500))
+        }
+        private fun disableMarkers() {
+            rButton.compoundDrawableTintList = ColorStateList.valueOf(Color.argb(100,0,0,0))
+        }
+        fun setMarker(x: Float, y:Float) {
+            val marker = Marker(map)
+            marker.position = GeoPoint(x.toDouble(), y.toDouble())
         }
     }
 }

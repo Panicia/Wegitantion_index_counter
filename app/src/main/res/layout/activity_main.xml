@@ -51,4 +51,22 @@
         app:rippleColor="#00FFFFFF"
         tools:ignore="SpeakableTextPresentCheck" />
 
+    <Button
+        android:id="@+id/button3"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="83dp"
+        android:layout_height="89dp"
+        app:icon="@android:drawable/ic_dialog_map"
+        app:iconGravity="textEnd"
+        app:iconSize="70dp"
+        app:iconTint="#66000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.954"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.182"
+        app:rippleColor="#00FFFFFF"
+        tools:ignore="SpeakableTextPresentCheck" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
