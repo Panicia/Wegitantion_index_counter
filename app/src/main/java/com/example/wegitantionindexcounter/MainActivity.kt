@@ -24,8 +24,10 @@ import org.osmdroid.api.IMapController
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.views.MapView
 import org.osmdroid.config.Configuration.*
+import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.events.MapListener
 import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.overlay.MapEventsOverlay
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.ScaleBarOverlay
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
@@ -46,9 +48,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         map = binding.mapView
         setMapDefaults(map)
+
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     override fun onResume() {
         super.onResume()
         val rotateBtn = RotateMapBtn(map, binding.button2, this)
@@ -59,28 +61,23 @@ class MainActivity : AppCompatActivity() {
         binding.button3.setOnClickListener {
             markerBtn.pressButton()
         }
-        map.addMapListener(MapListener())
-        map.setOnGenericMotionListener{
-            view, event ->
-            val x = event.x
-            val y = event.y
-            Log.d("TAG", "$x $y")
-            true
+        //val mapEventsReceiver = MapEventsReceiverImpl()
+        val mapEventsOverlay = MapEventsOverlay(markerBtn)
+        map.overlays.add(mapEventsOverlay)
+        map.onResume()
+    }
+
+    class MapEventsReceiverImpl(_map:MapView) : MapEventsReceiver {
+
+        override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
+            Log.d("TAG", "${p?.latitude} - ${p?.longitude}")
+            return true
         }
 
-        /*map.setOnTouchListener {
-                _, event ->
-
-            /*if(!markerBtn.isEnabled){
-                true
-            }*/
-            val x = event.x
-            val y = event.y
-            Log.d("TAG", "$x $y")
-           // markerBtn.setMarker(x, y)
-            false
-        }*/
-        map.onResume()
+        override fun longPressHelper(p: GeoPoint?): Boolean {
+            Log.d("TAG", "${p?.latitude} - ${p?.longitude}")
+            return false
+        }
     }
 
     override fun onPause() {
@@ -127,7 +124,7 @@ class MainActivity : AppCompatActivity() {
         protected val map = _map
         var isEnabled = false
         get() {
-            return isEnabled
+            return field
         }
         open fun pressButton() {
 
@@ -155,7 +152,8 @@ class MainActivity : AppCompatActivity() {
             rButton.compoundDrawableTintList = ColorStateList.valueOf(Color.argb(100,0,0,0))
         }
     }
-    class MarkerMapBtn(_map : MapView, _btn : Button, _context : Context) : MapBtn(_map, _btn, _context) {
+    class MarkerMapBtn(_map : MapView, _btn : Button, _context : Context) : MapEventsReceiver, MapBtn(_map, _btn, _context) {
+        var markersCounter = 0
         override fun pressButton() {
             if(isEnabled) {
                 disableMarkers()
@@ -166,15 +164,32 @@ class MainActivity : AppCompatActivity() {
                 isEnabled = true
             }
         }
+        override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
+            if (isEnabled) {
+                Log.d("TAG", "short ${p?.latitude} - ${p?.longitude}")
+                setMarker(p)
+            }
+            return true
+        }
+        override fun longPressHelper(p: GeoPoint?): Boolean {
+            Log.d("TAG", "long ${p?.latitude} - ${p?.longitude}")
+            return false
+        }
         private fun enableMarkers() {
             rButton.compoundDrawableTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.purple_500))
         }
         private fun disableMarkers() {
             rButton.compoundDrawableTintList = ColorStateList.valueOf(Color.argb(100,0,0,0))
         }
-        fun setMarker(x: Float, y:Float) {
+        private fun setMarker(p:GeoPoint?) {
             val marker = Marker(map)
-            marker.position = GeoPoint(x.toDouble(), y.toDouble())
+            marker.position = p
+            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
+            marker.icon = ContextCompat.getDrawable(context, org.osmdroid.library.R.drawable.osm_ic_follow_me_on)
+            marker.title = "marker $markersCounter\n lat: ${p?.latitude} lon: ${p?.longitude}"
+            markersCounter ++
+            map.overlays.add(marker)
+            map.invalidate()
         }
     }
 }
