@@ -1,35 +1,25 @@
 package com.example.wegitantionindexcounter
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.graphics.ColorSpace
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.KeyEvent
-import android.view.MotionEvent
 import androidx.preference.PreferenceManager
 import android.view.View
 import android.widget.Button
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.toColor
-import androidx.core.graphics.toColorLong
 import com.example.wegitantionindexcounter.databinding.ActivityMainBinding
 import org.osmdroid.api.IMapController
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.views.MapView
 import org.osmdroid.config.Configuration.*
 import org.osmdroid.events.MapEventsReceiver
-import org.osmdroid.events.MapListener
 import org.osmdroid.util.GeoPoint
-import org.osmdroid.views.overlay.MapEventsOverlay
-import org.osmdroid.views.overlay.Marker
-import org.osmdroid.views.overlay.ScaleBarOverlay
+import org.osmdroid.views.overlay.*
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
 
 
@@ -41,43 +31,38 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
+    private lateinit var markersAdder : MarkersAdder
+    private lateinit var mapOverlayHandler: MapOverlayHandler
+    private lateinit var rotateMapBtn : RotateMapBtn
+    private lateinit var markerAddAvailableBtn : MarkerAddAvailableBtn
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this))
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         map = binding.mapView
+        mapOverlayHandler = MapOverlayHandler(map, this)
+        rotateMapBtn = RotateMapBtn(mapOverlayHandler, binding.button2, this)
+        markerAddAvailableBtn = MarkerAddAvailableBtn(mapOverlayHandler, binding.button3, this)
+        markersAdder = MarkersAdder(markerAddAvailableBtn, mapOverlayHandler)
         setMapDefaults(map)
-
     }
 
     override fun onResume() {
         super.onResume()
-        val rotateBtn = RotateMapBtn(map, binding.button2, this)
         binding.button2.setOnClickListener {
-            rotateBtn.pressButton()
+            rotateMapBtn.pressButton()
         }
-        val markerBtn = MarkerMapBtn(map, binding.button3, this)
         binding.button3.setOnClickListener {
-            markerBtn.pressButton()
+            markerAddAvailableBtn.pressButton()
         }
-        //val mapEventsReceiver = MapEventsReceiverImpl()
-        val mapEventsOverlay = MapEventsOverlay(markerBtn)
+        binding.button4.setOnClickListener {
+            mapOverlayHandler.deleteAll()
+        }
+        val mapEventsOverlay = MapEventsOverlay(markersAdder)
         map.overlays.add(mapEventsOverlay)
         map.onResume()
-    }
-
-    class MapEventsReceiverImpl(_map:MapView) : MapEventsReceiver {
-
-        override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
-            Log.d("TAG", "${p?.latitude} - ${p?.longitude}")
-            return true
-        }
-
-        override fun longPressHelper(p: GeoPoint?): Boolean {
-            Log.d("TAG", "${p?.latitude} - ${p?.longitude}")
-            return false
-        }
     }
 
     override fun onPause() {
@@ -118,19 +103,18 @@ class MainActivity : AppCompatActivity() {
         mapController.setCenter(startPointAhrangelsk);
     }
 
-    open class MapBtn(_map : MapView, _btn : Button, _context : Context) {
+    open class MapBtn(_mapOverlayHandler : MapOverlayHandler, _btn : Button, _context : Context) {
         protected val context = _context
         protected val rButton = _btn
-        protected val map = _map
+        protected val mapOverlayHandler = _mapOverlayHandler
+
         var isEnabled = false
         get() {
             return field
         }
-        open fun pressButton() {
-
-        }
+        open fun pressButton() {}
     }
-    class RotateMapBtn(_map : MapView, _btn : Button, _context : Context) : MapBtn(_map, _btn, _context) {
+    class RotateMapBtn(_mapOverlayHandler: MapOverlayHandler, _btn : Button, _context : Context) : MapBtn(_mapOverlayHandler, _btn, _context) {
         override fun pressButton() {
             if(isEnabled) {
                 disableMapRotate()
@@ -142,18 +126,15 @@ class MainActivity : AppCompatActivity() {
             }
         }
         private fun enableMapRotate() {
-            val rotationGestureOverlay = RotationGestureOverlay(map)
-            rotationGestureOverlay.isEnabled
-            map.overlays.add(rotationGestureOverlay)
+            mapOverlayHandler.setRotate()
             rButton.compoundDrawableTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.purple_500))
         }
         private fun disableMapRotate() {
-            map.overlays.removeAt(map.overlays.size - 1)
+            mapOverlayHandler.deleteRotate()
             rButton.compoundDrawableTintList = ColorStateList.valueOf(Color.argb(100,0,0,0))
         }
     }
-    class MarkerMapBtn(_map : MapView, _btn : Button, _context : Context) : MapEventsReceiver, MapBtn(_map, _btn, _context) {
-        var markersCounter = 0
+    class MarkerAddAvailableBtn(_mapOverlayHandler:MapOverlayHandler, _btn : Button, _context : Context) : MapBtn(_mapOverlayHandler, _btn, _context) {
         override fun pressButton() {
             if(isEnabled) {
                 disableMarkers()
@@ -164,31 +145,109 @@ class MainActivity : AppCompatActivity() {
                 isEnabled = true
             }
         }
-        override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
-            if (isEnabled) {
-                Log.d("TAG", "short ${p?.latitude} - ${p?.longitude}")
-                setMarker(p)
-            }
-            return true
-        }
-        override fun longPressHelper(p: GeoPoint?): Boolean {
-            Log.d("TAG", "long ${p?.latitude} - ${p?.longitude}")
-            return false
-        }
         private fun enableMarkers() {
             rButton.compoundDrawableTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.purple_500))
         }
         private fun disableMarkers() {
             rButton.compoundDrawableTintList = ColorStateList.valueOf(Color.argb(100,0,0,0))
         }
-        private fun setMarker(p:GeoPoint?) {
-            val marker = Marker(map)
-            marker.position = p
-            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
-            marker.icon = ContextCompat.getDrawable(context, org.osmdroid.library.R.drawable.osm_ic_follow_me_on)
-            marker.title = "marker $markersCounter\n lat: ${p?.latitude} lon: ${p?.longitude}"
-            markersCounter ++
-            map.overlays.add(marker)
+    }
+    class MarkersAdder(_button : MarkerAddAvailableBtn, _mapOverlayHandler : MapOverlayHandler) : MapEventsReceiver {
+        private val button  = _button
+        private val mapOverlayHandler = _mapOverlayHandler
+        override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
+            if (button.isEnabled) {
+                Log.d("TAG", "short ${p?.latitude} - ${p?.longitude}")
+                mapOverlayHandler.setMarker(p)
+            }
+            return true
+        }
+        override fun longPressHelper(p: GeoPoint?): Boolean {
+            Log.d("TAG", "long ${p?.latitude} - ${p?.longitude}")
+            mapOverlayHandler.deleteLastMarker()
+            return false
+        }
+    }
+    class MapOverlayHandler(_map : MapView, _context: Context) {
+        private val context = _context
+        private val map = _map
+        private var markersCounter = 0
+        private val geoPointArray = ArrayList<GeoPoint>()
+        private var polygon = Polygon()
+        private val rotationGestureOverlay = RotationGestureOverlay(map)
+
+        init {
+            map.overlays.add(rotationGestureOverlay)
+            rotationGestureOverlay.isEnabled = false
+        }
+
+        fun setRotate() {
+            rotationGestureOverlay.isEnabled = true
+        }
+        fun deleteRotate() {
+            rotationGestureOverlay.isEnabled = false
+        }
+        fun setMarker(p:GeoPoint?) {
+            if(p != null) {
+                val marker = Marker(map)
+                marker.position = p
+                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                marker.icon = ContextCompat.getDrawable(context, R.drawable.geo_fill_icon_185595)
+                marker.title = "marker $markersCounter\n lat: ${p.latitude}\n lon: ${p.longitude}"
+                markersCounter++
+                geoPointArray.add(p)
+                map.overlays.add(marker)
+                if(markersCounter > 2) {
+                    deletePolygon()
+                    createPolygon()
+                }
+                map.invalidate()
+            }
+        }
+        private fun createPolygon() {
+            if(markersCounter > 0) {
+                geoPointArray.add(geoPointArray[0])
+                polygon.fillPaint.color = Color.parseColor("#1EFFE70E")
+                polygon.points = geoPointArray
+                polygon.title = "Polygon 1"
+                map.overlays.add(polygon)
+                geoPointArray.removeAt(geoPointArray.size - 1)
+            }
+        }
+        private fun deletePolygon() {
+            for(i in map.overlays.size - 1 downTo 0) {
+                if(map.overlays[i] is Polygon) {
+                    map.overlays.removeAt(i)
+                    break
+                }
+            }
+        }
+        fun deleteLastMarker() {
+            if(markersCounter > 0){
+                for (i in map.overlays.size - 1 downTo 0) {
+                    if (map.overlays[i] is Marker) {
+                        map.overlays.removeAt(i)
+                        geoPointArray.removeAt(geoPointArray.size - 1)
+                        break
+                    }
+                }
+                if(markersCounter > 2) {
+                    deletePolygon()
+                    markersCounter--
+                    if(markersCounter > 2) createPolygon()
+                }
+                else markersCounter--
+                map.invalidate()
+            }
+        }
+        fun deleteAll() {
+            for(i in map.overlays.size - 1 downTo 0) {
+                if(map.overlays[i] is Marker || map.overlays[i] is Polygon) {
+                    map.overlays.removeAt(i)
+                }
+            }
+            geoPointArray.clear()
+            markersCounter = 0
             map.invalidate()
         }
     }
