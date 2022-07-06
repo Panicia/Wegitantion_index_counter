@@ -10,6 +10,7 @@ import android.util.Log
 import androidx.preference.PreferenceManager
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.wegitantionindexcounter.databinding.ActivityMainBinding
@@ -21,6 +22,8 @@ import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.*
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
+import org.osmdroid.views.overlay.infowindow.InfoWindow
+import kotlin.math.pow
 
 
 class MainActivity : AppCompatActivity() {
@@ -46,6 +49,8 @@ class MainActivity : AppCompatActivity() {
         rotateMapBtn = RotateMapBtn(mapOverlayHandler, binding.button2, this)
         markerAddAvailableBtn = MarkerAddAvailableBtn(mapOverlayHandler, binding.button3, this)
         markersAdder = MarkersAdder(markerAddAvailableBtn, mapOverlayHandler)
+        val mapEventsOverlay = MapEventsOverlay(markersAdder)
+        map.overlays.add(mapEventsOverlay)
         setMapDefaults(map)
     }
 
@@ -60,8 +65,6 @@ class MainActivity : AppCompatActivity() {
         binding.button4.setOnClickListener {
             mapOverlayHandler.deleteAll()
         }
-        val mapEventsOverlay = MapEventsOverlay(markersAdder)
-        map.overlays.add(mapEventsOverlay)
         map.onResume()
     }
 
@@ -157,22 +160,22 @@ class MainActivity : AppCompatActivity() {
         private val mapOverlayHandler = _mapOverlayHandler
         override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
             if (button.isEnabled) {
-                Log.d("TAG", "short ${p?.latitude} - ${p?.longitude}")
                 mapOverlayHandler.setMarker(p)
             }
             return true
         }
         override fun longPressHelper(p: GeoPoint?): Boolean {
-            Log.d("TAG", "long ${p?.latitude} - ${p?.longitude}")
-            mapOverlayHandler.deleteLastMarker()
+            if (button.isEnabled) {
+                mapOverlayHandler.deleteLastMarker()
+            }
             return false
         }
     }
-    class MapOverlayHandler(_map : MapView, _context: Context) {
+    class MapOverlayHandler(_map : MapView, _context: Context) : Marker.OnMarkerDragListener {
         private val context = _context
         private val map = _map
         private var markersCounter = 0
-        private val geoPointArray = ArrayList<GeoPoint>()
+        private val markersArray = ArrayList<Marker>()
         private var polygon = Polygon()
         private val rotationGestureOverlay = RotationGestureOverlay(map)
 
@@ -193,10 +196,20 @@ class MainActivity : AppCompatActivity() {
                 marker.position = p
                 marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                 marker.icon = ContextCompat.getDrawable(context, R.drawable.geo_fill_icon_185595)
-                marker.title = "marker $markersCounter\n lat: ${p.latitude}\n lon: ${p.longitude}"
+                marker.title = "lat: ${p.latitude}\nlon: ${p.longitude}"
+                marker.isDraggable = true
+                marker.setOnMarkerDragListener(this)
+                marker.dragOffset = 6f
+                val infoWindow = MarkerWindow(map, marker, this)
+                marker.infoWindow = infoWindow
                 markersCounter++
-                geoPointArray.add(p)
+                //val array = makeGeoPointsArray()
+                //array.add(array[0])
+                //val iter = checkNearEdge(marker.position, array)
+                markersArray.add(marker)
                 map.overlays.add(marker)
+                //array.removeAt(array.size - 1)
+
                 if(markersCounter > 2) {
                     deletePolygon()
                     createPolygon()
@@ -204,8 +217,17 @@ class MainActivity : AppCompatActivity() {
                 map.invalidate()
             }
         }
+        private fun makeGeoPointsArray() : ArrayList<GeoPoint> {
+            val array = ArrayList<GeoPoint>()
+            for(i in 0 until markersArray.size) {
+                val geoPoint = GeoPoint(markersArray[i].position)
+                array.add(geoPoint)
+            }
+            return array
+        }
         private fun createPolygon() {
             if(markersCounter > 0) {
+                val geoPointArray = makeGeoPointsArray()
                 geoPointArray.add(geoPointArray[0])
                 polygon.fillPaint.color = Color.parseColor("#1EFFE70E")
                 polygon.points = geoPointArray
@@ -213,6 +235,23 @@ class MainActivity : AppCompatActivity() {
                 map.overlays.add(polygon)
                 geoPointArray.removeAt(geoPointArray.size - 1)
             }
+        }
+        private fun checkNearEdge(geoPoint: GeoPoint, list: ArrayList<GeoPoint>) : Int {
+            var minDist : Double = getAverageDistance(geoPoint, list[0], list[1])
+            var iter = 0
+            for(i in 1 until list.size - 1) {
+                val dist = getAverageDistance(geoPoint, list[i], list[i + 1])
+                if(dist < minDist) {
+                    minDist = dist
+                    iter = i
+                }
+            }
+            return iter
+        }
+        private fun getAverageDistance(target: GeoPoint, geoPoint1: GeoPoint, geoPoint2: GeoPoint) : Double{
+            val len1 = ((target.longitude - geoPoint1.longitude).pow(2.0) + (target.latitude - geoPoint1.latitude).pow(2.0)).pow(0.5)
+            val len2 = ((target.longitude - geoPoint2.longitude).pow(2.0) + (target.latitude - geoPoint2.latitude).pow(2.0)).pow(0.5)
+            return (len1 + len2) / 2
         }
         private fun deletePolygon() {
             for(i in map.overlays.size - 1 downTo 0) {
@@ -222,22 +261,32 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+        fun deleteMarker(marker:Marker) {
+            if(markersArray.contains(marker) && map.overlays.contains(marker)) {
+                markersArray.remove(marker)
+                map.overlays.remove(marker)
+                redrawPolygonIfNeeded()
+            }
+        }
+        private fun redrawPolygonIfNeeded() {
+            if(markersCounter > 2) {
+                deletePolygon()
+                markersCounter--
+                if(markersCounter > 2) createPolygon()
+            }
+            else markersCounter--
+            map.invalidate()
+        }
         fun deleteLastMarker() {
-            if(markersCounter > 0){
+            if(markersCounter > 0) {
                 for (i in map.overlays.size - 1 downTo 0) {
                     if (map.overlays[i] is Marker) {
                         map.overlays.removeAt(i)
-                        geoPointArray.removeAt(geoPointArray.size - 1)
+                        markersArray.removeAt(markersArray.size - 1)
                         break
                     }
                 }
-                if(markersCounter > 2) {
-                    deletePolygon()
-                    markersCounter--
-                    if(markersCounter > 2) createPolygon()
-                }
-                else markersCounter--
-                map.invalidate()
+                redrawPolygonIfNeeded()
             }
         }
         fun deleteAll() {
@@ -246,9 +295,42 @@ class MainActivity : AppCompatActivity() {
                     map.overlays.removeAt(i)
                 }
             }
-            geoPointArray.clear()
+            InfoWindow.closeAllInfoWindowsOn(map)
+            markersArray.clear()
             markersCounter = 0
             map.invalidate()
+        }
+        override fun onMarkerDrag(marker: Marker?) {
+            deletePolygon()
+            createPolygon()
+        }
+        override fun onMarkerDragStart(marker: Marker?) {
+            marker?.icon = ContextCompat.getDrawable(context, R.drawable.geo_fill_icon_red)
+        }
+        override fun onMarkerDragEnd(marker: Marker?) {
+            marker?.icon = ContextCompat.getDrawable(context, R.drawable.geo_fill_icon_185595)
+        }
+    }
+    class MarkerWindow(mapView: MapView, _marker: Marker, _mapOverlayHandler: MapOverlayHandler) : InfoWindow(R.layout.marker_layout, mapView) {
+        private val mapOverlayHandler = _mapOverlayHandler
+        private val marker = _marker
+        private val map = mapView
+        override fun onOpen(item: Any?) {
+            closeAllInfoWindowsOn(map)
+            val deleteButton = mView.findViewById<Button>(R.id.delete_button)
+            val textView = mView.findViewById<TextView>(R.id.text_view)
+            textView.text = marker.title
+
+            deleteButton.setOnClickListener {
+                mapOverlayHandler.deleteMarker(marker)
+                closeAllInfoWindowsOn(map)
+            }
+            mView.setOnClickListener {
+                close()
+            }
+        }
+        override fun onClose() {
+
         }
     }
 }
