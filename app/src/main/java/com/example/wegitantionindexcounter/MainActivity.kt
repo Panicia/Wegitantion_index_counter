@@ -193,23 +193,8 @@ class MainActivity : AppCompatActivity() {
         fun setMarker(p:GeoPoint?) {
             if(p != null) {
                 val marker = Marker(map)
-                marker.position = p
-                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                marker.icon = ContextCompat.getDrawable(context, R.drawable.geo_fill_icon_185595)
-                marker.title = "lat: ${p.latitude}\nlon: ${p.longitude}"
-                marker.isDraggable = true
-                marker.setOnMarkerDragListener(this)
-                marker.dragOffset = 6f
-                val infoWindow = MarkerWindow(map, marker, this)
-                marker.infoWindow = infoWindow
-                markersCounter++
-                //val array = makeGeoPointsArray()
-                //array.add(array[0])
-                //val iter = checkNearEdge(marker.position, array)
-                markersArray.add(marker)
-                map.overlays.add(marker)
-                //array.removeAt(array.size - 1)
-
+                setMarkerDefaults(marker, p)
+                placeMarker(marker)
                 if(markersCounter > 2) {
                     deletePolygon()
                     createPolygon()
@@ -217,48 +202,86 @@ class MainActivity : AppCompatActivity() {
                 map.invalidate()
             }
         }
+        private fun placeMarker(marker: Marker) {
+            if(markersCounter > 2) {
+                val iter = checkNearEdge(marker.position)
+                markersArray.add(iter, marker)
+            }
+            else
+                markersArray.add(marker)
+            map.overlays.add(marker)
+            markersCounter++
+        }
+        private fun setMarkerDefaults(marker: Marker, p: GeoPoint) {
+            marker.position = p
+            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+            marker.icon = ContextCompat.getDrawable(context, R.drawable.geo_fill_icon_185595)
+            marker.title = "lat: ${p.latitude}\nlon: ${p.longitude}"
+            marker.isDraggable = true
+            marker.setOnMarkerDragListener(this)
+            marker.dragOffset = 6f
+            val infoWindow = MarkerWindow(map, marker, this)
+            marker.infoWindow = infoWindow
+        }
         private fun makeGeoPointsArray() : ArrayList<GeoPoint> {
             val array = ArrayList<GeoPoint>()
             for(i in 0 until markersArray.size) {
                 val geoPoint = GeoPoint(markersArray[i].position)
                 array.add(geoPoint)
             }
+            array.add(array[0])
             return array
         }
         private fun createPolygon() {
             if(markersCounter > 0) {
                 val geoPointArray = makeGeoPointsArray()
-                geoPointArray.add(geoPointArray[0])
                 polygon.fillPaint.color = Color.parseColor("#1EFFE70E")
                 polygon.points = geoPointArray
                 polygon.title = "Polygon 1"
-                map.overlays.add(polygon)
-                geoPointArray.removeAt(geoPointArray.size - 1)
+                map.overlays.add(0, polygon)
             }
         }
-        private fun checkNearEdge(geoPoint: GeoPoint, list: ArrayList<GeoPoint>) : Int {
-            var minDist : Double = getAverageDistance(geoPoint, list[0], list[1])
-            var iter = 0
+        private fun checkNearEdge(geoPoint: GeoPoint) : Int {
+            var minDistanceIter = 0
+            val list = makeGeoPointsArray()
+            var minDist : Double = getDistance(geoPoint, list[0])
             for(i in 1 until list.size - 1) {
-                val dist = getAverageDistance(geoPoint, list[i], list[i + 1])
+                val dist = getDistance(geoPoint, list[i])
                 if(dist < minDist) {
                     minDist = dist
-                    iter = i
+                    minDistanceIter = i
                 }
             }
-            return iter
+            val len1 : Double
+            val len2 : Double
+            if(minDistanceIter == 0) {
+                len1 = getDistance(geoPoint, list[list.size - 2])
+                len2 = getDistance(geoPoint, list[1])
+                if(len1 > len2) {
+                    return minDistanceIter + 1
+                }
+                else {
+                    return list.size - 1
+                }
+            }
+            else {
+                len1 = getDistance(geoPoint, list[minDistanceIter - 1])
+                len2 = getDistance(geoPoint, list[minDistanceIter + 1])
+                if(len1 > len2) {
+                    return minDistanceIter + 1
+                }
+                else {
+                    return minDistanceIter
+                }
+            }
         }
-        private fun getAverageDistance(target: GeoPoint, geoPoint1: GeoPoint, geoPoint2: GeoPoint) : Double{
+        private fun getDistance(target: GeoPoint, geoPoint1: GeoPoint) : Double {
             val len1 = ((target.longitude - geoPoint1.longitude).pow(2.0) + (target.latitude - geoPoint1.latitude).pow(2.0)).pow(0.5)
-            val len2 = ((target.longitude - geoPoint2.longitude).pow(2.0) + (target.latitude - geoPoint2.latitude).pow(2.0)).pow(0.5)
-            return (len1 + len2) / 2
+            return len1
         }
         private fun deletePolygon() {
-            for(i in map.overlays.size - 1 downTo 0) {
-                if(map.overlays[i] is Polygon) {
-                    map.overlays.removeAt(i)
-                    break
-                }
+            if(map.overlays.contains(polygon)) {
+                map.overlays.remove(polygon)
             }
         }
         fun deleteMarker(marker:Marker) {
@@ -291,10 +314,11 @@ class MainActivity : AppCompatActivity() {
         }
         fun deleteAll() {
             for(i in map.overlays.size - 1 downTo 0) {
-                if(map.overlays[i] is Marker || map.overlays[i] is Polygon) {
+                if(map.overlays[i] is Marker) {
                     map.overlays.removeAt(i)
                 }
             }
+            deletePolygon()
             InfoWindow.closeAllInfoWindowsOn(map)
             markersArray.clear()
             markersCounter = 0
