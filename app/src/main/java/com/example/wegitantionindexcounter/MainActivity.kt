@@ -166,7 +166,7 @@ class MainActivity : AppCompatActivity() {
         }
         override fun longPressHelper(p: GeoPoint?): Boolean {
             if (button.isEnabled) {
-                mapOverlayHandler.deleteLastMarker()
+                //mapOverlayHandler.deleteLastMarker()
             }
             return false
         }
@@ -204,8 +204,8 @@ class MainActivity : AppCompatActivity() {
         }
         private fun placeMarker(marker: Marker) {
             if(markersCounter > 2) {
-                val iter = checkNearEdge(marker.position)
-                markersArray.add(iter, marker)
+                //val iter = checkNearEdge(marker.position)
+                markersArray.add(marker)
             }
             else
                 markersArray.add(marker)
