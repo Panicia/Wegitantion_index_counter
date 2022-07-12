@@ -2,6 +2,7 @@ package com.example.wegitantionindexcounter
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.Canvas
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,7 +10,10 @@ import android.util.DisplayMetrics
 import android.util.Log
 import androidx.preference.PreferenceManager
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ListView
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -20,6 +24,7 @@ import org.osmdroid.views.MapView
 import org.osmdroid.config.Configuration.*
 import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.overlay.*
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
 import org.osmdroid.views.overlay.infowindow.InfoWindow
@@ -38,6 +43,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mapOverlayHandler: MapOverlayHandler
     private lateinit var rotateMapBtn : RotateMapBtn
     private lateinit var markerAddAvailableBtn : MarkerAddAvailableBtn
+    private lateinit var dynamicAreasView : DynamicAreasView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,9 +55,11 @@ class MainActivity : AppCompatActivity() {
         rotateMapBtn = RotateMapBtn(mapOverlayHandler, binding.button2, this)
         markerAddAvailableBtn = MarkerAddAvailableBtn(mapOverlayHandler, binding.button3, this)
         markersAdder = MarkersAdder(markerAddAvailableBtn, mapOverlayHandler)
+        dynamicAreasView = DynamicAreasView(binding.scrollView1, this)
         val mapEventsOverlay = MapEventsOverlay(markersAdder)
         map.overlays.add(mapEventsOverlay)
         setMapDefaults(map)
+
     }
 
     override fun onResume() {
@@ -92,11 +100,10 @@ class MainActivity : AppCompatActivity() {
     private fun setMapDefaults(map:MapView) {
         map.setLayerType(View.LAYER_TYPE_HARDWARE, null)
         map.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
-
         map.setMultiTouchControls(true);
         mapController = map.controller;
         mapController.setZoom(10.0);
-
+        map.zoomController.setVisibility(CustomZoomButtonsController.Visibility.NEVER)
         val dm : DisplayMetrics = this.resources.displayMetrics
         val scaleBarOverlay = ScaleBarOverlay(map)
         scaleBarOverlay.setCentred(true)
@@ -169,6 +176,21 @@ class MainActivity : AppCompatActivity() {
                 //mapOverlayHandler.deleteLastMarker()
             }
             return false
+        }
+    }
+    class DynamicAreasView(_view: ScrollView, _context: Context) {
+        private val view = _view
+        private val context = _context
+        private val viewArray = ArrayList<View>()
+
+        init {
+            view.layoutParams.height = 0
+            view.setBackgroundColor(Color.argb(100,0,0,0))
+        }
+
+        fun addMarkerInView(marker: Marker) {
+            val markerView = View(context)
+            //view.addView()
         }
     }
     class MapOverlayHandler(_map : MapView, _context: Context) : Marker.OnMarkerDragListener {
