@@ -2,22 +2,21 @@ package com.example.wegitantionindexcounter
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.Canvas
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
+import android.view.LayoutInflater
 import androidx.preference.PreferenceManager
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ListView
-import android.widget.ScrollView
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.wegitantionindexcounter.databinding.ActivityMainBinding
+import com.google.android.material.bottomappbar.BottomAppBar
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.osmdroid.api.IMapController
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.views.MapView
@@ -43,7 +42,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mapOverlayHandler: MapOverlayHandler
     private lateinit var rotateMapBtn : RotateMapBtn
     private lateinit var markerAddAvailableBtn : MarkerAddAvailableBtn
-    private lateinit var dynamicAreasView : DynamicAreasView
+    //private lateinit var dynamicAreasView : DynamicAreasView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         rotateMapBtn = RotateMapBtn(mapOverlayHandler, binding.button2, this)
         markerAddAvailableBtn = MarkerAddAvailableBtn(mapOverlayHandler, binding.button3, this)
         markersAdder = MarkersAdder(markerAddAvailableBtn, mapOverlayHandler)
-        dynamicAreasView = DynamicAreasView(binding.scrollView1, this)
+        //dynamicAreasView = DynamicAreasView(binding.bottomAppBar, this)
         val mapEventsOverlay = MapEventsOverlay(markersAdder)
         map.overlays.add(mapEventsOverlay)
         setMapDefaults(map)
@@ -99,18 +99,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun setMapDefaults(map:MapView) {
         map.setLayerType(View.LAYER_TYPE_HARDWARE, null)
-        map.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
-        map.setMultiTouchControls(true);
-        mapController = map.controller;
-        mapController.setZoom(10.0);
+        map.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE)
+        map.setMultiTouchControls(true)
+        mapController = map.controller
+        mapController.setZoom(10.0)
         map.zoomController.setVisibility(CustomZoomButtonsController.Visibility.NEVER)
         val dm : DisplayMetrics = this.resources.displayMetrics
         val scaleBarOverlay = ScaleBarOverlay(map)
         scaleBarOverlay.setCentred(true)
         scaleBarOverlay.setScaleBarOffset(dm.widthPixels / 2, 10)
         map.overlays.add(scaleBarOverlay)
-        val startPointAhrangelsk = GeoPoint(64.54008896758883, 40.51580601698074);
-        mapController.setCenter(startPointAhrangelsk);
+        val startPointAhrangelsk = GeoPoint(64.54008896758883, 40.51580601698074)
+        mapController.setCenter(startPointAhrangelsk)
     }
 
     open class MapBtn(_mapOverlayHandler : MapOverlayHandler, _btn : Button, _context : Context) {
@@ -178,13 +178,13 @@ class MainActivity : AppCompatActivity() {
             return false
         }
     }
-    class DynamicAreasView(_view: ScrollView, _context: Context) {
+    class DynamicAreasView(_view: BottomAppBar, _context: Context) {
         private val view = _view
         private val context = _context
         private val viewArray = ArrayList<View>()
 
         init {
-            view.layoutParams.height = 0
+            //view.layoutParams.height = 0
             view.setBackgroundColor(Color.argb(100,0,0,0))
         }
 
