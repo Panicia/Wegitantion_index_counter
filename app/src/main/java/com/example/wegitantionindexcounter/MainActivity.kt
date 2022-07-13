@@ -6,17 +6,14 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.view.LayoutInflater
 import androidx.preference.PreferenceManager
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
+import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.wegitantionindexcounter.databinding.ActivityMainBinding
-import com.google.android.material.bottomappbar.BottomAppBar
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.osmdroid.api.IMapController
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.views.MapView
@@ -42,7 +39,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mapOverlayHandler: MapOverlayHandler
     private lateinit var rotateMapBtn : RotateMapBtn
     private lateinit var markerAddAvailableBtn : MarkerAddAvailableBtn
-    //private lateinit var dynamicAreasView : DynamicAreasView
+    private lateinit var dynamicAreasView : DynamicAreasView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,11 +48,11 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         map = binding.mapView
-        mapOverlayHandler = MapOverlayHandler(map, this)
+        dynamicAreasView = DynamicAreasView(binding.standardBottomSheet, binding.listView1, this)
+        mapOverlayHandler = MapOverlayHandler(map, this, dynamicAreasView)
         rotateMapBtn = RotateMapBtn(mapOverlayHandler, binding.button2, this)
         markerAddAvailableBtn = MarkerAddAvailableBtn(mapOverlayHandler, binding.button3, this)
         markersAdder = MarkersAdder(markerAddAvailableBtn, mapOverlayHandler)
-        //dynamicAreasView = DynamicAreasView(binding.bottomAppBar, this)
         val mapEventsOverlay = MapEventsOverlay(markersAdder)
         map.overlays.add(mapEventsOverlay)
         setMapDefaults(map)
@@ -72,6 +69,7 @@ class MainActivity : AppCompatActivity() {
         }
         binding.button4.setOnClickListener {
             mapOverlayHandler.deleteAll()
+            dynamicAreasView.hideSheet()
         }
         map.onResume()
     }
@@ -173,28 +171,52 @@ class MainActivity : AppCompatActivity() {
         }
         override fun longPressHelper(p: GeoPoint?): Boolean {
             if (button.isEnabled) {
-                //mapOverlayHandler.deleteLastMarker()
+
             }
             return false
         }
     }
-    class DynamicAreasView(_view: BottomAppBar, _context: Context) {
-        private val view = _view
+
+    class DynamicAreasView(_bottomSheet: FrameLayout, _listView: LinearLayout, _context: Context) {
+        private val bottomSheet = _bottomSheet
+        private val listView = _listView
         private val context = _context
         private val viewArray = ArrayList<View>()
 
         init {
-            //view.layoutParams.height = 0
-            view.layoutParams.height = 1
-            view.setBackgroundColor(Color.argb(100,0,0,0))
+            BottomSheetBehavior.from(bottomSheet).apply {
+                peekHeight = 0
+                this.state = BottomSheetBehavior.STATE_COLLAPSED
+            }
         }
-
         fun addMarkerInView(marker: Marker) {
-            val markerView = View(context)
-            view.addView(markerView)
+            val textView = TextView(context)
+            val layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT)
+            layoutParams.setMargins(50, 20,50, 20)
+            textView.layoutParams = layoutParams
+            textView.setTextColor(Color.BLACK)
+            textView.textSize = 20F
+            textView.text = marker.title
+            viewArray.add(textView)
+            listView.addView(textView)
+            changeCollapsedHeight(280)
+        }
+        private fun changeCollapsedHeight(height: Int) {
+            BottomSheetBehavior.from(bottomSheet).apply {
+                peekHeight = height
+            }
+        }
+        fun hideSheet() {
+            BottomSheetBehavior.from(bottomSheet).apply {
+                peekHeight = 0
+            }
         }
     }
-    class MapOverlayHandler(_map : MapView, _context: Context) : Marker.OnMarkerDragListener {
+
+    class MapOverlayHandler(_map : MapView, _context: Context, _dynamicAreasView: DynamicAreasView) : Marker.OnMarkerDragListener {
+        private val dynamicAreasView = _dynamicAreasView
         private val context = _context
         private val map = _map
         private var markersCounter = 0
@@ -223,11 +245,11 @@ class MainActivity : AppCompatActivity() {
                     createPolygon()
                 }
                 map.invalidate()
+                dynamicAreasView.addMarkerInView(marker)
             }
         }
         private fun placeMarker(marker: Marker) {
             if(markersCounter > 2) {
-                //val iter = checkNearEdge(marker.position)
                 markersArray.add(marker)
             }
             else
