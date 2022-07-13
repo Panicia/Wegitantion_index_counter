@@ -185,12 +185,13 @@ class MainActivity : AppCompatActivity() {
 
         init {
             //view.layoutParams.height = 0
+            view.layoutParams.height = 1
             view.setBackgroundColor(Color.argb(100,0,0,0))
         }
 
         fun addMarkerInView(marker: Marker) {
             val markerView = View(context)
-            //view.addView()
+            view.addView(markerView)
         }
     }
     class MapOverlayHandler(_map : MapView, _context: Context) : Marker.OnMarkerDragListener {
