@@ -85,6 +85,9 @@
             android:layout_height="match_parent"
             android:layout_marginBottom="20dp"
             android:scrollIndicators="right"
+            android:scrollbarAlwaysDrawVerticalTrack="true"
+            android:scrollbarThumbVertical="@color/black"
+            android:scrollbars="vertical"
             android:translationY="20dp">
 
             <LinearLayout
