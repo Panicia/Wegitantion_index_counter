@@ -16,6 +16,7 @@ class DynamicAreasView(_bottomSheet: FrameLayout, _listView: LinearLayout, _cont
     private val listView = _listView
     private val context = _context
     private val viewArray = ArrayList<View>()
+    //private var markerAdapter: MarkerAdapter = MarkerAdapter()
 
     init {
         BottomSheetBehavior.from(bottomSheet).apply {
@@ -37,7 +38,7 @@ class DynamicAreasView(_bottomSheet: FrameLayout, _listView: LinearLayout, _cont
         listView.addView(textView)
         changeCollapsedHeight(280)
     }
-    fun addMarkerInView2(marker: Marker) {
+    fun updateMarkers(markerList:List<Marker>) {
 
     }
     fun addPolygonInView(polygon: Polygon) {

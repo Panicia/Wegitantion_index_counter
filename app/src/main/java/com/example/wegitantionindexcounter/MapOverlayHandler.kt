@@ -59,7 +59,7 @@ class MapOverlayHandler(_map : MapView, _context: Context, _dynamicAreasView: Dy
         marker.position = p
         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
         marker.icon = ContextCompat.getDrawable(context, R.drawable.geo_fill_icon_185595)
-        marker.title = "lat: ${p.latitude}\nlon: ${p.longitude}"
+        marker.title = "Point ${markersCounter + 1}"
         marker.isDraggable = true
         marker.setOnMarkerDragListener(this)
         marker.dragOffset = 6f
@@ -177,26 +177,29 @@ class MapOverlayHandler(_map : MapView, _context: Context, _dynamicAreasView: Dy
     override fun onMarkerDragEnd(marker: Marker?) {
         marker?.icon = ContextCompat.getDrawable(context, R.drawable.geo_fill_icon_185595)
     }
-}
-class MarkerWindow(mapView: MapView, _marker: Marker, _mapOverlayHandler: MapOverlayHandler) : InfoWindow(R.layout.marker_layout, mapView) {
-    private val mapOverlayHandler = _mapOverlayHandler
-    private val marker = _marker
-    private val map = mapView
-    override fun onOpen(item: Any?) {
-        closeAllInfoWindowsOn(map)
-        val deleteButton = mView.findViewById<Button>(R.id.delete_button)
-        val textView = mView.findViewById<TextView>(R.id.text_view)
-        textView.text = marker.title
-
-        deleteButton.setOnClickListener {
-            mapOverlayHandler.deleteMarker(marker)
+    class MarkerWindow(mapView: MapView, _marker: Marker, _mapOverlayHandler: MapOverlayHandler) : InfoWindow(R.layout.marker_layout, mapView) {
+        private val mapOverlayHandler = _mapOverlayHandler
+        private val marker = _marker
+        private val map = mapView
+        override fun onOpen(item: Any?) {
             closeAllInfoWindowsOn(map)
-        }
-        mView.setOnClickListener {
-            close()
-        }
-    }
-    override fun onClose() {
+            val deleteButton = mView.findViewById<Button>(R.id.delete_button)
+            val textView = mView.findViewById<TextView>(R.id.text_view)
+            textView.text = getMarkerPos()
 
+            deleteButton.setOnClickListener {
+                mapOverlayHandler.deleteMarker(marker)
+                closeAllInfoWindowsOn(map)
+            }
+            mView.setOnClickListener {
+                close()
+            }
+        }
+        private fun getMarkerPos(): String {
+            return "lat: ${marker.position.latitude}\nlon: ${marker.position.longitude}"
+        }
+        override fun onClose() {
+
+        }
     }
 }
