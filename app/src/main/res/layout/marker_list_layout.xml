@@ -11,7 +11,7 @@
         android:id="@+id/icon_marker"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_alignParentLeft="true"/>
+        android:layout_alignParentLeft="true" />
 
     <TextView
         android:id="@+id/text_marker"
