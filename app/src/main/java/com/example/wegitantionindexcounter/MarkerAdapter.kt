@@ -1,6 +1,5 @@
 package com.example.wegitantionindexcounter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +13,7 @@ class MarkerAdapter(val listener : (Marker) -> Unit): RecyclerView.Adapter<Marke
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SingleViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val markerView = inflater.inflate(R.layout.marker_list_layout, parent, false)
+        val markerView = inflater.inflate(R.layout.marker_layout_for_list, parent, false)
         return SingleViewHolder(markerView)
     }
 
@@ -33,7 +32,7 @@ class MarkerAdapter(val listener : (Marker) -> Unit): RecyclerView.Adapter<Marke
 
     inner class SingleViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
         val icon = itemView.findViewById<ImageView>(R.id.icon_marker)
-        val title = itemView.findViewById<TextView>(R.id.text_marker)
+        val title = itemView.findViewById<TextView>(R.id.markerTextView1)
 
         fun bind(item:Marker, listener: (Marker) -> Unit) {
             icon.setImageDrawable(item.icon)

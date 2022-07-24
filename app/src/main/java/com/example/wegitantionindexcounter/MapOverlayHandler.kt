@@ -16,7 +16,6 @@ class MapOverlayHandler(
     private val polygonHandler = PolygonHandler(map)
     private val markersHandler = MarkersHandler(map, context, polygonHandler)
 
-
     init {
         map.overlays.add(rotationGestureOverlay)
         rotationGestureOverlay.isEnabled = false
@@ -25,13 +24,14 @@ class MapOverlayHandler(
     fun setRotate() {
         rotationGestureOverlay.isEnabled = true
     }
+
     fun deleteRotate() {
         rotationGestureOverlay.isEnabled = false
     }
 
     fun placeMarker(p: GeoPoint) {
         val marker = markersHandler.createMarker(p)
-        dynamicAreasView.addMarkerInView(marker)
+        dynamicAreasView.addMarkerInView2(marker)
     }
 
     fun deleteAll() {

@@ -11,10 +11,11 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polygon
 
-class DynamicAreasView(_bottomSheet: FrameLayout, _listView: LinearLayout, _context: Context) {
-    private val bottomSheet = _bottomSheet
-    private val listView = _listView
-    private val context = _context
+class DynamicAreasView(
+    private val bottomSheet: FrameLayout,
+    private val listView: LinearLayout,
+    private val context: Context) {
+
     private val viewArray = ArrayList<View>()
     //private var markerAdapter: MarkerAdapter = MarkerAdapter()
 
@@ -24,6 +25,14 @@ class DynamicAreasView(_bottomSheet: FrameLayout, _listView: LinearLayout, _cont
             this.state = BottomSheetBehavior.STATE_COLLAPSED
         }
     }
+
+    fun addMarkerInView2(marker: Marker) : MarkerLayout{
+        val markerView = MarkerLayout(context, marker = marker, listView = listView)
+        listView.addView(markerView)
+        changeCollapsedHeight(300)
+        return markerView
+    }
+
     fun addMarkerInView(marker: Marker) {
         val textView = TextView(context)
         val layoutParams = LinearLayout.LayoutParams(
@@ -38,17 +47,17 @@ class DynamicAreasView(_bottomSheet: FrameLayout, _listView: LinearLayout, _cont
         listView.addView(textView)
         changeCollapsedHeight(280)
     }
+
     fun updateMarkers(markerList:List<Marker>) {
 
     }
-    fun addPolygonInView(polygon: Polygon) {
 
-    }
     private fun changeCollapsedHeight(height: Int) {
         BottomSheetBehavior.from(bottomSheet).apply {
             peekHeight = height
         }
     }
+
     fun hideSheet() {
         BottomSheetBehavior.from(bottomSheet).apply {
             peekHeight = 0

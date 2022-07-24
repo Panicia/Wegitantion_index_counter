@@ -67,7 +67,7 @@
         android:id="@+id/standard_bottom_sheet"
         style="?attr/bottomSheetStyle"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="500dp"
         android:background="@drawable/rounded"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
@@ -83,12 +83,12 @@
             style="@android:style/Widget.DeviceDefault.ScrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="10dp"
             android:scrollIndicators="right"
             android:scrollbarAlwaysDrawVerticalTrack="true"
             android:scrollbarThumbVertical="@color/black"
             android:scrollbars="vertical"
-            android:translationY="20dp">
+            android:translationY="8dp">
 
             <LinearLayout
                 android:id="@+id/listView1"

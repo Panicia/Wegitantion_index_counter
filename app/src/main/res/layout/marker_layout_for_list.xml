@@ -3,18 +3,19 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="85dp"
-    android:padding="16dp"
+    android:layout_height="80dp"
+    android:padding="12dp"
     >
 
     <ImageView
         android:id="@+id/icon_marker"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_alignParentLeft="true" />
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true" />
 
     <TextView
-        android:id="@+id/text_marker"
+        android:id="@+id/markerTextView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
@@ -26,12 +27,12 @@
         tools:text="chat title" />
 
     <TextView
-        android:id="@+id/text_marker2"
+        android:id="@+id/markerTextView2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/text_marker"
+        android:layout_height="36dp"
+        android:layout_below="@id/markerTextView1"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:layout_marginRight="16dp"
         android:layout_toRightOf="@id/icon_marker"
         android:fontFamily="sans-serif-medium"
