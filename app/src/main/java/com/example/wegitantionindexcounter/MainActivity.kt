@@ -1,8 +1,10 @@
 package com.example.wegitantionindexcounter
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.DisplayMetrics
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.preference.PreferenceManager
@@ -101,5 +103,15 @@ class MainActivity : AppCompatActivity() {
         map.overlays.add(scaleBarOverlay)
         val startPointAhrangelsk = GeoPoint(64.54008896758883, 40.51580601698074)
         mapController.setCenter(startPointAhrangelsk)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val mapSaver = MapFeaturesSaver()
+        outState.putParcelable("map", mapSaver)
+    }
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        val mapSaver : MapFeaturesSaver? = savedInstanceState.getParcelable("map")
     }
 }

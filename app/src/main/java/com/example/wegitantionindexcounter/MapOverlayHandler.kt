@@ -31,7 +31,7 @@ class MapOverlayHandler(
 
     fun placeMarker(p: GeoPoint) {
         val marker = markersHandler.createMarker(p)
-        dynamicAreasView.addMarkerInView2(marker)
+        dynamicAreasView.addMarkerInView(marker)
     }
 
     fun deleteAll() {
