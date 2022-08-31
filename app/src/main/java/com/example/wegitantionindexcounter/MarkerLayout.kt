@@ -14,7 +14,6 @@ class MarkerLayout @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
     private val marker : Marker,
-    private val listView: LinearLayout
 
     ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
