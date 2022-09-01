@@ -63,7 +63,7 @@
         app:rippleColor="#00000000"
         tools:ignore="SpeakableTextPresentCheck" />
 
-    <FrameLayout
+    <!--FrameLayout
         android:id="@+id/standard_bottom_sheet"
         style="?attr/bottomSheetStyle"
         android:layout_width="match_parent"
@@ -98,6 +98,6 @@
         </ScrollView>
 
 
-    </FrameLayout>
+    </FrameLayout-->
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -5,11 +5,11 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
 import org.osmdroid.views.overlay.infowindow.InfoWindow
+import trash.DynamicAreasView
 
 class MapOverlayHandler(
     private val map : MapView,
     private val context: Context,
-    private val dynamicAreasView: DynamicAreasView,
     )  {
 
     private val rotationGestureOverlay = RotationGestureOverlay(map)
@@ -31,7 +31,6 @@ class MapOverlayHandler(
 
     fun placeMarker(p: GeoPoint) {
         val marker = markersHandler.createMarker(p)
-        dynamicAreasView.addMarkerInView(marker)
     }
 
     fun deleteAll() {

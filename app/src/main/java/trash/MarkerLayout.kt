@@ -1,19 +1,19 @@
-package com.example.wegitantionindexcounter
+package trash
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.example.wegitantionindexcounter.R
 import org.osmdroid.views.overlay.Marker
 
 class MarkerLayout @JvmOverloads constructor(
     context : Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
-    private val marker : Marker,
+    private val marker : Marker
 
     ) : ConstraintLayout(context, attrs, defStyleAttr) {
 

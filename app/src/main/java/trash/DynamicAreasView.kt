@@ -1,15 +1,11 @@
-package com.example.wegitantionindexcounter
+package trash
 
 import android.content.Context
-import android.graphics.Color
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
-import android.widget.TextView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.osmdroid.views.overlay.Marker
-import org.osmdroid.views.overlay.Polygon
 
 class DynamicAreasView(
     private val bottomSheet: FrameLayout,
@@ -26,8 +22,8 @@ class DynamicAreasView(
         }
     }
 
-    fun addMarkerInView(marker: Marker) : MarkerLayout{
-        val markerView = MarkerLayout(context, marker = marker, listView = listView)
+    fun addMarkerInView(marker: Marker) : MarkerLayout {
+        val markerView = MarkerLayout(context, marker = marker)
         listView.addView(markerView)
         changeCollapsedHeight(300)
         return markerView

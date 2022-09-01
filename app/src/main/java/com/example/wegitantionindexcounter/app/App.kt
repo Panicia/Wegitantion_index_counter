@@ -1,6 +1,7 @@
 package com.example.wegitantionindexcounter.app
 
 import android.app.Application
+import com.example.wegitantionindexcounter.app.di.*
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -13,7 +14,7 @@ class App : Application() {
         startKoin {
             androidContext(this@App)
             androidLogger(Level.DEBUG)
-            modules(listOf())
+            modules(listOf(viewModelModule))
         }
     }
 }
