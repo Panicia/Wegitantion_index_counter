@@ -1,4 +1,4 @@
-package com.example.wegitantionindexcounter
+package views.mapView
 
 import android.graphics.Color
 import org.osmdroid.util.GeoPoint

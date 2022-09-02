@@ -1,9 +1,9 @@
-package com.example.wegitantionindexcounter
+package views.mapView
 
-import android.content.Context
 import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import com.example.wegitantionindexcounter.R
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
@@ -11,7 +11,6 @@ import org.osmdroid.views.overlay.infowindow.InfoWindow
 
 class MarkersHandler(
     private val map: MapView,
-    private val context: Context,
     private val polygonHandler: PolygonHandler
 
     ): Marker.OnMarkerDragListener {
@@ -24,10 +23,10 @@ class MarkersHandler(
         polygonHandler.createNewPolygon(markersArray)
     }
     override fun onMarkerDragStart(marker: Marker?) {
-        marker?.icon = ContextCompat.getDrawable(context, R.drawable.geo_fill_icon_red)
+        marker?.icon = ContextCompat.getDrawable(map.context, R.drawable.geo_fill_icon_red)
     }
     override fun onMarkerDragEnd(marker: Marker?) {
-        marker?.icon = ContextCompat.getDrawable(context, R.drawable.geo_fill_icon_185595)
+        marker?.icon = ContextCompat.getDrawable(map.context, R.drawable.geo_fill_icon_185595)
     }
 
     fun createMarker(p: GeoPoint) : Marker {
@@ -67,7 +66,7 @@ class MarkersHandler(
     private fun setMarkerDefaults(marker: Marker, p: GeoPoint) {
         marker.position = p
         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-        marker.icon = ContextCompat.getDrawable(context, R.drawable.geo_fill_icon_185595)
+        marker.icon = ContextCompat.getDrawable(map.context, R.drawable.geo_fill_icon_185595)
         marker.title = "Point ${markersCounter + 1}"
         marker.isDraggable = true
         marker.setOnMarkerDragListener(this)

@@ -1,23 +1,20 @@
 package com.example.wegitantionindexcounter
 
-import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.widget.Button
 import androidx.core.content.ContextCompat
+import views.mapView.MapOverlayHandler
 
-open class MapBtn(_mapOverlayHandler : MapOverlayHandler, _btn : Button, _context : Context) {
-    protected val context = _context
-    protected val rButton = _btn
-    protected val mapOverlayHandler = _mapOverlayHandler
+open class MapBtn(
+    protected val mapOverlayHandler : MapOverlayHandler,
+    protected val rButton : Button) {
 
     var isEnabled = false
-        get() {
-            return field
-        }
+
     open fun pressButton() {}
 }
-class RotateMapBtn(_mapOverlayHandler: MapOverlayHandler, _btn : Button, _context : Context) : MapBtn(_mapOverlayHandler, _btn, _context) {
+class RotateMapBtn(_mapOverlayHandler: MapOverlayHandler, _btn : Button) : MapBtn(_mapOverlayHandler, _btn) {
     override fun pressButton() {
         if(isEnabled) {
             disableMapRotate()
@@ -29,15 +26,15 @@ class RotateMapBtn(_mapOverlayHandler: MapOverlayHandler, _btn : Button, _contex
         }
     }
     private fun enableMapRotate() {
-        mapOverlayHandler.setRotate()
-        rButton.compoundDrawableTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.purple_500))
+        mapOverlayHandler.rotateOn()
+        rButton.compoundDrawableTintList = ColorStateList.valueOf(ContextCompat.getColor(rButton.context, R.color.purple_500))
     }
     private fun disableMapRotate() {
-        mapOverlayHandler.deleteRotate()
+        mapOverlayHandler.rotateOff()
         rButton.compoundDrawableTintList = ColorStateList.valueOf(Color.argb(100,0,0,0))
     }
 }
-class MarkerAddAvailableBtn(_mapOverlayHandler:MapOverlayHandler, _btn : Button, _context : Context) : MapBtn(_mapOverlayHandler, _btn, _context) {
+class MarkerAddAvailableBtn(_mapOverlayHandler: MapOverlayHandler, _btn : Button) : MapBtn(_mapOverlayHandler, _btn) {
     override fun pressButton() {
         if(isEnabled) {
             disableMarkers()
@@ -49,7 +46,7 @@ class MarkerAddAvailableBtn(_mapOverlayHandler:MapOverlayHandler, _btn : Button,
         }
     }
     private fun enableMarkers() {
-        rButton.compoundDrawableTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.purple_500))
+        rButton.compoundDrawableTintList = ColorStateList.valueOf(ContextCompat.getColor(rButton.context, R.color.purple_500))
     }
     private fun disableMarkers() {
         rButton.compoundDrawableTintList = ColorStateList.valueOf(Color.argb(100,0,0,0))

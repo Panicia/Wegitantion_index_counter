@@ -3,28 +3,27 @@ package com.example.wegitantionindexcounter
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.preference.PreferenceManager
 import com.example.wegitantionindexcounter.databinding.ActivityMainBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.osmdroid.api.IMapController
-import org.osmdroid.config.Configuration.*
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.*
-import trash.DynamicAreasView
+import notUsed.DynamicAreasView
 import viewModels.MapViewModel
+import views.mapView.MapOverlayHandler
+import views.mapView.MarkersAdder
 
 
 class MainActivity : AppCompatActivity() {
 
     private val mapViewModel by viewModel<MapViewModel>()
 
-    private val REQUEST_PERMISSIONS_REQUEST_CODE = 1
+    private val requestPermissionsRequestCode = 1
 
     private lateinit var map : MapView
     private lateinit var mapController : IMapController
@@ -47,13 +46,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        binding.button2.setOnClickListener {
+        binding.buttonRotate.setOnClickListener {
             rotateMapBtn.pressButton()
         }
-        binding.button3.setOnClickListener {
+        binding.buttonMarkersAddAvailable.setOnClickListener {
             markerAddAvailableBtn.pressButton()
         }
-        binding.button4.setOnClickListener {
+        binding.buttonDeleteAll.setOnClickListener {
             mapOverlayHandler.deleteAll()
             dynamicAreasView.hideSheet()
         }
@@ -77,22 +76,22 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(
                 this,
                 permissionsToRequest.toTypedArray(),
-                REQUEST_PERMISSIONS_REQUEST_CODE)
+                requestPermissionsRequestCode)
         }
     }
 
     private fun initAll() {
         map = binding.mapView
         //dynamicAreasView = DynamicAreasView(binding.standardBottomSheet, binding.listView1, this)
-        mapOverlayHandler = MapOverlayHandler(map, this)
-        rotateMapBtn = RotateMapBtn(mapOverlayHandler, binding.button2, this)
-        markerAddAvailableBtn = MarkerAddAvailableBtn(mapOverlayHandler, binding.button3, this)
+        mapOverlayHandler = MapOverlayHandler(map)
+        rotateMapBtn = RotateMapBtn(mapOverlayHandler, binding.buttonRotate)
+        markerAddAvailableBtn = MarkerAddAvailableBtn(mapOverlayHandler, binding.buttonMarkersAddAvailable)
         markersAdder = MarkersAdder(markerAddAvailableBtn, mapOverlayHandler)
         mapNecessary(map)
         setMapDefaults(map)
     }
 
-    fun mapNecessary(map : MapView) {
+    private fun mapNecessary(map : MapView) {
         val mapEventsOverlay = MapEventsOverlay(markersAdder)
         map.overlays.add(mapEventsOverlay)
         mapController = map.controller

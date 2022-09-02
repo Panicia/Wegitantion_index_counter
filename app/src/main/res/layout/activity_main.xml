@@ -13,7 +13,7 @@
         android:layout_height="match_parent"/>
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/buttonDeleteAll"
         style="@style/Widget.Material3.Button.TextButton.Icon"
         android:layout_width="70dp"
         android:layout_height="70dp"
@@ -31,7 +31,7 @@
         tools:ignore="SpeakableTextPresentCheck" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/buttonRotate"
         style="@style/Widget.Material3.Button.TextButton"
         android:layout_width="70dp"
         android:layout_height="70dp"
@@ -48,7 +48,7 @@
         tools:ignore="SpeakableTextPresentCheck" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/buttonMarkersAddAvailable"
         style="@style/Widget.Material3.Button.TextButton"
         android:layout_width="70dp"
         android:layout_height="70dp"

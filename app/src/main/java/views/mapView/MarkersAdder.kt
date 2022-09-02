@@ -1,5 +1,6 @@
-package com.example.wegitantionindexcounter
+package views.mapView
 
+import com.example.wegitantionindexcounter.MarkerAddAvailableBtn
 import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.util.GeoPoint
 

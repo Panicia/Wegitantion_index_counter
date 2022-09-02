@@ -1,36 +1,33 @@
-package com.example.wegitantionindexcounter
+package views.mapView
 
-import android.content.Context
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
 import org.osmdroid.views.overlay.infowindow.InfoWindow
-import trash.DynamicAreasView
 
 class MapOverlayHandler(
     private val map : MapView,
-    private val context: Context,
     )  {
 
     private val rotationGestureOverlay = RotationGestureOverlay(map)
     private val polygonHandler = PolygonHandler(map)
-    private val markersHandler = MarkersHandler(map, context, polygonHandler)
+    private val markersHandler = MarkersHandler(map, polygonHandler)
 
     init {
         map.overlays.add(rotationGestureOverlay)
         rotationGestureOverlay.isEnabled = false
     }
 
-    fun setRotate() {
+    fun rotateOn() {
         rotationGestureOverlay.isEnabled = true
     }
 
-    fun deleteRotate() {
+    fun rotateOff() {
         rotationGestureOverlay.isEnabled = false
     }
 
     fun placeMarker(p: GeoPoint) {
-        val marker = markersHandler.createMarker(p)
+        markersHandler.createMarker(p)
     }
 
     fun deleteAll() {
