@@ -80,7 +80,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun initAll() {
         map = binding.mapView
-        //dynamicAreasView = DynamicAreasView(binding.standardBottomSheet, binding.listView1, this)
         mapOverlayHandler = MapOverlayHandler(map)
         rotateMapBtn = RotateMapBtn(mapOverlayHandler, binding.buttonRotate)
         markerAddAvailableBtn = MarkerAddAvailableBtn(mapOverlayHandler, binding.buttonMarkersAddAvailable)
