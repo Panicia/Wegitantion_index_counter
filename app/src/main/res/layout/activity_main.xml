@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -10,64 +10,59 @@
     <org.osmdroid.views.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
     <Button
         android:id="@+id/buttonDeleteAll"
-        style="@style/Widget.Material3.Button.TextButton.Icon"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:insetLeft="7dp"
         android:scaleX="1.5"
         android:scaleY="1.5"
         android:translationX="-10dp"
         android:translationY="10dp"
-        app:icon="@android:drawable/ic_delete"
-        app:iconTint="#F44336"
-        app:layout_anchor="@+id/mapView"
-        app:layout_anchorGravity="end|top"
-        app:rippleColor="#E91E63"
-        app:strokeColor="#E91E63"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.953"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.027"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <Button
         android:id="@+id/buttonRotate"
-        style="@style/Widget.Material3.Button.TextButton"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:insetLeft="7dp"
         android:scaleX="1.5"
         android:scaleY="1.5"
         android:translationY="20dp"
-        app:icon="@android:drawable/ic_menu_rotate"
-        app:iconTint="#65000000"
-        app:layout_anchor="@+id/button4"
-        app:layout_anchorGravity="bottom|center"
-        app:layout_insetEdge="none"
-        app:rippleColor="#00FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.923"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonMarkersAddAvailable"
+        app:layout_constraintVertical_bias="0.061"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <Button
         android:id="@+id/buttonMarkersAddAvailable"
-        style="@style/Widget.Material3.Button.TextButton"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:insetLeft="7dp"
         android:scaleX="1.3"
         android:scaleY="1.3"
         android:translationY="20dp"
-        app:icon="@android:drawable/ic_dialog_map"
-        app:iconTint="#66000000"
-        app:layout_anchor="@+id/button2"
-        app:layout_anchorGravity="bottom|center"
-        app:rippleColor="#00000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.923"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonDeleteAll"
+        app:layout_constraintVertical_bias="0.048"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <!--FrameLayout
         android:id="@+id/standard_bottom_sheet"
         style="?attr/bottomSheetStyle"
-        android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_width="293dp"
+        android:layout_height="269dp"
         android:background="@drawable/rounded"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
@@ -100,4 +95,4 @@
 
     </FrameLayout-->
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

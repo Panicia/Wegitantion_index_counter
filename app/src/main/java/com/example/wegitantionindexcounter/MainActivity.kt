@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
 
     private val mapViewModel by viewModel<MapViewModel>()
 
-    private val requestPermissionsRequestCode = 1
+    private val REQUEST_PERMISSIONS_REQUEST_CODE = 1
 
     private lateinit var map : MapView
     private lateinit var mapController : IMapController
@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         }
         binding.buttonDeleteAll.setOnClickListener {
             mapOverlayHandler.deleteAll()
-            dynamicAreasView.hideSheet()
+            //dynamicAreasView.hideSheet()
         }
         map.onResume()
     }
@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(
                 this,
                 permissionsToRequest.toTypedArray(),
-                requestPermissionsRequestCode)
+                REQUEST_PERMISSIONS_REQUEST_CODE)
         }
     }
 
@@ -87,28 +87,24 @@ class MainActivity : AppCompatActivity() {
         rotateMapBtn = RotateMapBtn(mapOverlayHandler, binding.buttonRotate)
         markerAddAvailableBtn = MarkerAddAvailableBtn(mapOverlayHandler, binding.buttonMarkersAddAvailable)
         markersAdder = MarkersAdder(markerAddAvailableBtn, mapOverlayHandler)
-        mapNecessary(map)
         setMapDefaults(map)
     }
 
-    private fun mapNecessary(map : MapView) {
+    private fun setMapDefaults(map : MapView) {
         val mapEventsOverlay = MapEventsOverlay(markersAdder)
         map.overlays.add(mapEventsOverlay)
-        mapController = map.controller
-        mapController.setZoom(10.0)
-        val startPointAhrangelsk = GeoPoint(64.54008896758883, 40.51580601698074)
-        mapController.setCenter(startPointAhrangelsk)
-    }
-
-    private fun setMapDefaults(map : MapView) {
         map.setLayerType(View.LAYER_TYPE_HARDWARE, null)
         map.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE)
         map.setMultiTouchControls(true)
+        mapController = map.controller
+        mapController.setZoom(10.0)
         map.zoomController.setVisibility(CustomZoomButtonsController.Visibility.NEVER)
-        val dm : DisplayMetrics = this.resources.displayMetrics
+        val dm : DisplayMetrics = map.context.resources.displayMetrics
         val scaleBarOverlay = ScaleBarOverlay(map)
         scaleBarOverlay.setCentred(true)
         scaleBarOverlay.setScaleBarOffset(dm.widthPixels / 2, 10)
         map.overlays.add(scaleBarOverlay)
+        val startPointAhrangelsk = GeoPoint(64.54008896758883, 40.51580601698074)
+        mapController.setCenter(startPointAhrangelsk)
     }
 }
