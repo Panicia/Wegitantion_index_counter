@@ -34,7 +34,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mapOverlayHandler : MapOverlayHandler
     private lateinit var rotateMapBtn : RotateMapBtn
     private lateinit var markerAddAvailableBtn : MarkerAddAvailableBtn
-    private lateinit var dynamicAreasView : DynamicAreasView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,7 +53,6 @@ class MainActivity : AppCompatActivity() {
         }
         binding.buttonDeleteAll.setOnClickListener {
             mapOverlayHandler.deleteAll()
-            //dynamicAreasView.hideSheet()
         }
         map.onResume()
     }
