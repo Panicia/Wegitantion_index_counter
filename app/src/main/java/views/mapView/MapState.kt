@@ -6,10 +6,11 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.*
-import viewModels.MapViewModel
+import viewModels.mapViewModel.MapViewModel
 
 class MapState(
-    private val mapViewModel : MapViewModel) {
+    private val mapViewModel : MapViewModel
+) {
 
     private var defaultMapZoom = 10.0
     private var mapZoom = mapViewModel.mapZoom

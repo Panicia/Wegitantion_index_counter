@@ -5,6 +5,7 @@ import android.util.DisplayMetrics
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.preference.PreferenceManager
 import com.example.wegitantionindexcounter.databinding.ActivityMainBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.osmdroid.api.IMapController
@@ -13,8 +14,8 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.*
-import notUsed.DynamicAreasView
-import viewModels.MapViewModel
+import org.osmdroid.config.Configuration
+import viewModels.mapViewModel.MapViewModel
 import views.mapView.MapOverlayHandler
 import views.mapView.MarkersAdder
 
@@ -38,6 +39,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this))
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initAll()
