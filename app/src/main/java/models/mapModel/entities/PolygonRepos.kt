@@ -13,6 +13,6 @@ import androidx.room.PrimaryKey
 data class PolygonRepos(
     @PrimaryKey(autoGenerate = true) val id: Long,
     val name: String,
-    val image: Bitmap,
+    val imagePath: String?,
     val stateId: Long
 )

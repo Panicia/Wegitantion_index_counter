@@ -21,7 +21,6 @@ val databaseModule = module {
             .build()
     }
 
-
     fun provideDao(database: AppDatabase): MapDao {
         return database.mapDao()
     }

@@ -13,13 +13,16 @@ interface MapDao {
     fun insertState(state: StateRepos)
 
     @Delete
-    fun deleteState(state: StateRepos)
+    fun deleteStates(vararg state: StateRepos)
 
     @Query("SELECT * FROM states WHERE id = :stateId")
-    fun getState(stateId : Long): StateRepos
+    fun getState(stateId : Long): StateRepos?
+
+    @Query("SELECT * FROM states")
+    fun getAllStates() : List<StateRepos>
 
     @Update
-    fun updateState(vararg state: StateRepos)
+    fun updateStates(vararg state: StateRepos)
 
 
     // Polygon functions
@@ -30,16 +33,19 @@ interface MapDao {
     fun insertPolygons(polygon: List<PolygonRepos>)
 
     @Delete
-    fun deletePolygon(polygon: PolygonRepos)
+    fun deletePolygons(vararg polygon: PolygonRepos)
 
     @Query("SELECT * FROM polygons WHERE stateId = :stateId")
     fun getPolygonsFromState(stateId : Long): List<PolygonRepos>
 
     @Query("SELECT * FROM polygons WHERE id = :polId")
-    fun getPolygon(polId: Long): PolygonRepos
+    fun getPolygon(polId: Long): PolygonRepos?
+
+    @Query("SELECT * FROM polygons")
+    fun getAllPolygons() : List<PolygonRepos>
 
     @Update
-    fun updatePolygon(vararg polygon: PolygonRepos)
+    fun updatePolygons(vararg polygon: PolygonRepos)
 
 
     // Marker functions
@@ -50,7 +56,7 @@ interface MapDao {
     fun insertMarkers(markers: List<MarkerRepos>)
 
     @Delete
-    fun deleteMarker(marker: MarkerRepos)
+    fun deleteMarkers(vararg marker: MarkerRepos)
 
     @Query("SELECT * FROM markers " +
             "INNER JOIN polygons ON polygons.id = markers.polId " +
@@ -62,8 +68,11 @@ interface MapDao {
     fun getMarkersFromPoly(polId: Long): List<MarkerRepos>
 
     @Query("SELECT * FROM markers WHERE id = :markerId")
-    fun getMarker(markerId: Long): MarkerRepos
+    fun getMarker(markerId: Long): MarkerRepos?
+
+    @Query("SELECT * FROM markers")
+    fun getAllMarkers() : List<MarkerRepos>
 
     @Update
-    fun updateMarker(vararg marker: MarkerRepos)
+    fun updateMarkers(vararg marker: MarkerRepos)
 }

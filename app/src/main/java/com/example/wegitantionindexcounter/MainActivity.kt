@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        mapViewModel.mapState
         binding.buttonRotate.setOnClickListener {
             rotateMapBtn.pressButton()
         }

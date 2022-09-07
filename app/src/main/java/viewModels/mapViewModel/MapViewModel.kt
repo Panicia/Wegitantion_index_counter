@@ -12,21 +12,15 @@ class MapViewModel(
     private val mapRepository : MapRepository
 ) : ViewModel() {
 
-    val defaultZoom = 10.0
-    val startPointAhrangelsk = GeoPoint(64.54008896758883, 40.51580601698074)
-
-    lateinit var markersArray : ArrayList<Marker>
-    lateinit var polygonsArray : Polygon
-    var mapZoom : Double = defaultZoom
-    var mapCenter : GeoPoint = startPointAhrangelsk
+    var mapState = MapState(mapRepository.startPointAhrangelsk, mapRepository.defaultZoom, ArrayList())
 
     init {
-
+        updateState()
     }
 
     private fun updateState() {
         viewModelScope.launch {
-
+            mapState = mapRepository.loadState()
         }
     }
 }

@@ -6,13 +6,13 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.*
+import viewModels.mapViewModel.MapState
 import viewModels.mapViewModel.MapViewModel
 
-class MapStateManager(
+class MapStateHandler(
     private val mapViewModel : MapViewModel
 ) {
-    private var mapZoom = mapViewModel.mapZoom
-    private var mapCenter = mapViewModel.mapCenter
+    private var mapState = mapViewModel.mapState
     private lateinit var mapOverlays : List<Overlay>
     private lateinit var mapEventsOverlay : MapEventsOverlay
 
@@ -24,7 +24,6 @@ class MapStateManager(
 
     fun saveMapState(map : MapView) {
         mapWasSaved = true
-
     }
 
     fun restoreMap(map : MapView) {
@@ -47,8 +46,8 @@ class MapStateManager(
     private fun setMapDefaults(map : MapView, markersAdder : MapEventsHandler) {
         mapEventsOverlay = MapEventsOverlay(markersAdder)
         map.overlays.add(mapEventsOverlay)
-        map.controller.setZoom(mapViewModel.defaultZoom)
-        map.controller.setCenter(mapViewModel.startPointAhrangelsk)
+        map.controller.setZoom(mapViewModel.mapState.mapZoom)
+        map.controller.setCenter(mapViewModel.mapState.mapCenter)
     }
 
     private fun setMapDefaultsBasis(map : MapView) {
