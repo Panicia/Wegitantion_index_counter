@@ -8,11 +8,9 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.*
 import viewModels.mapViewModel.MapViewModel
 
-class MapState(
+class MapStateManager(
     private val mapViewModel : MapViewModel
 ) {
-
-    private var defaultMapZoom = 10.0
     private var mapZoom = mapViewModel.mapZoom
     private var mapCenter = mapViewModel.mapCenter
     private lateinit var mapOverlays : List<Overlay>
@@ -33,7 +31,7 @@ class MapState(
 
     }
 
-    fun defaultMapState(map : MapView, markersAdder: MarkersAdder) {
+    fun defaultMapState(map : MapView, markersAdder: MapEventsHandler) {
         setMapDefaults(map, markersAdder)
         setMapDefaultsBasis(map)
     }
@@ -46,10 +44,10 @@ class MapState(
 
     }
 
-    private fun setMapDefaults(map : MapView, markersAdder : MarkersAdder) {
+    private fun setMapDefaults(map : MapView, markersAdder : MapEventsHandler) {
         mapEventsOverlay = MapEventsOverlay(markersAdder)
         map.overlays.add(mapEventsOverlay)
-        map.controller.setZoom(defaultMapZoom)
+        map.controller.setZoom(mapViewModel.defaultZoom)
         map.controller.setCenter(mapViewModel.startPointAhrangelsk)
     }
 

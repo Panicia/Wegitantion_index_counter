@@ -2,6 +2,7 @@ package views.mapView
 
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.Polygon
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
 import org.osmdroid.views.overlay.infowindow.InfoWindow
 
@@ -10,8 +11,8 @@ class MapOverlayHandler(
     )  {
 
     private val rotationGestureOverlay = RotationGestureOverlay(map)
-    private val polygonHandler = PolygonHandler(map)
-    private val markersHandler = MarkersHandler(map, polygonHandler)
+    private val polygonsManager = PolygonsManager(map)
+    private val markersManager = MarkersManager(map, polygonsManager)
 
     init {
         map.overlays.add(rotationGestureOverlay)
@@ -27,12 +28,12 @@ class MapOverlayHandler(
     }
 
     fun placeMarker(p: GeoPoint) {
-        markersHandler.createMarker(p)
+        markersManager.createMarker(p)
     }
 
     fun deleteAll() {
-        markersHandler.deleteAllMarkers()
-        polygonHandler.deletePolygon()
+        markersManager.deleteAllMarkers()
+        polygonsManager.deletePolygon()
         InfoWindow.closeAllInfoWindowsOn(map)
         map.invalidate()
     }

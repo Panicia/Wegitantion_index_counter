@@ -5,11 +5,11 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "markers", foreignKeys = [ForeignKey(
-    entity = Polygon::class,
+    entity = PolygonRepos::class,
     childColumns = ["polId"],
     parentColumns = ["id"]
 )])
-data class Marker(
+data class MarkerRepos(
     @PrimaryKey(autoGenerate = true) val id: Long,
     val lat: Double,
     val lon: Double,

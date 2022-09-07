@@ -1,69 +1,69 @@
 package models.mapModel
 
 import androidx.room.*
-import models.mapModel.entities.Marker
-import models.mapModel.entities.Polygon
-import models.mapModel.entities.State
+import models.mapModel.entities.MarkerRepos
+import models.mapModel.entities.PolygonRepos
+import models.mapModel.entities.StateRepos
 
 @Dao
 interface MapDao {
 
     // State functions
     @Insert
-    fun insertState(state: State)
+    fun insertState(state: StateRepos)
 
     @Delete
-    fun deleteState(state: State)
+    fun deleteState(state: StateRepos)
 
     @Query("SELECT * FROM states WHERE id = :stateId")
-    fun getState(stateId : Long): State
+    fun getState(stateId : Long): StateRepos
 
     @Update
-    fun updateState(vararg state: State)
+    fun updateState(vararg state: StateRepos)
 
 
     // Polygon functions
     @Insert
-    fun insertPolygon(polygon: Polygon)
+    fun insertPolygon(polygon: PolygonRepos)
 
     @Insert
-    fun insertPolygons(polygon: List<Polygon>)
+    fun insertPolygons(polygon: List<PolygonRepos>)
 
     @Delete
-    fun deletePolygon(polygon: Polygon)
+    fun deletePolygon(polygon: PolygonRepos)
 
     @Query("SELECT * FROM polygons WHERE stateId = :stateId")
-    fun getPolygonsFromState(stateId : Long): List<Polygon>
+    fun getPolygonsFromState(stateId : Long): List<PolygonRepos>
 
     @Query("SELECT * FROM polygons WHERE id = :polId")
-    fun getPolygon(polId: Long): Polygon
+    fun getPolygon(polId: Long): PolygonRepos
 
     @Update
-    fun updatePolygon(vararg polygon: Polygon)
+    fun updatePolygon(vararg polygon: PolygonRepos)
 
 
     // Marker functions
     @Insert
-    fun insertMarker(marker: Marker)
+    fun insertMarker(marker: MarkerRepos)
 
     @Insert
-    fun insertMarkers(markers: List<Marker>)
+    fun insertMarkers(markers: List<MarkerRepos>)
 
     @Delete
-    fun deleteMarker(marker: Marker)
+    fun deleteMarker(marker: MarkerRepos)
 
     @Query("SELECT * FROM markers " +
             "INNER JOIN polygons ON polygons.id = markers.polId " +
             "INNER JOIN states ON states.id = polygons.stateId " +
             "WHERE states.id = :stateId")
-    fun getMarkersFromState(stateId: Long): List<Marker>
+    fun getMarkersFromState(stateId: Long): List<MarkerRepos>
 
     @Query("SELECT * FROM markers WHERE polId = :polId")
-    fun getMarkersFromPoly(polId: Long): List<Marker>
+    fun getMarkersFromPoly(polId: Long): List<MarkerRepos>
 
     @Query("SELECT * FROM markers WHERE id = :markerId")
-    fun getMarker(markerId: Long): Marker
+    fun getMarker(markerId: Long): MarkerRepos
 
     @Update
-    fun updateMarker(vararg marker: Marker)
+    fun updateMarker(vararg marker: MarkerRepos)
 }

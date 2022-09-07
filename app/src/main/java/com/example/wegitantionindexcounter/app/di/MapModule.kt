@@ -17,7 +17,7 @@ val viewModelModule = module {
 val databaseModule = module {
 
     fun provideDatabase(application: Application): AppDatabase {
-        return Room.databaseBuilder(application, AppDatabase::class.java, "eds.database")
+        return Room.databaseBuilder(application, AppDatabase::class.java, "map_database")
             .build()
     }
 
@@ -31,9 +31,9 @@ val databaseModule = module {
 }
 
 val repositoryModule = module {
-    fun provideRepository(): MapRepository {
-        return MapRepository()
+    fun provideRepository(mapDao: MapDao): MapRepository {
+        return MapRepository(mapDao)
     }
 
-    single { provideRepository() }
+    single { provideRepository(get()) }
 }

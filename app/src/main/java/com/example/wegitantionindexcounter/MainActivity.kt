@@ -17,7 +17,9 @@ import org.osmdroid.views.overlay.*
 import org.osmdroid.config.Configuration
 import viewModels.mapViewModel.MapViewModel
 import views.mapView.MapOverlayHandler
-import views.mapView.MarkersAdder
+import views.mapView.MapEventsHandler
+import views.mapView.buttons.MarkerAddAvailableBtn
+import views.mapView.buttons.RotateMapBtn
 
 
 class MainActivity : AppCompatActivity() {
@@ -31,7 +33,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityMainBinding
 
-    private lateinit var markersAdder : MarkersAdder
+    private lateinit var markersAdder : MapEventsHandler
     private lateinit var mapOverlayHandler : MapOverlayHandler
     private lateinit var rotateMapBtn : RotateMapBtn
     private lateinit var markerAddAvailableBtn : MarkerAddAvailableBtn
@@ -85,7 +87,7 @@ class MainActivity : AppCompatActivity() {
         mapOverlayHandler = MapOverlayHandler(map)
         rotateMapBtn = RotateMapBtn(mapOverlayHandler, binding.buttonRotate)
         markerAddAvailableBtn = MarkerAddAvailableBtn(mapOverlayHandler, binding.buttonMarkersAddAvailable)
-        markersAdder = MarkersAdder(markerAddAvailableBtn, mapOverlayHandler)
+        markersAdder = MapEventsHandler(markerAddAvailableBtn, mapOverlayHandler)
         setMapDefaults(map)
     }
 

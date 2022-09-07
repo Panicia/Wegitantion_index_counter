@@ -2,6 +2,8 @@ package viewModels.mapViewModel
 
 import models.mapModel.MapRepository
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polygon
@@ -22,4 +24,9 @@ class MapViewModel(
 
     }
 
+    private fun updateState() {
+        viewModelScope.launch {
+
+        }
+    }
 }

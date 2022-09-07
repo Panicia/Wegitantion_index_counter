@@ -9,9 +9,9 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.infowindow.InfoWindow
 
-class MarkersHandler(
+class MarkersManager(
     private val map: MapView,
-    private val polygonHandler: PolygonHandler
+    private val polygonHandler: PolygonsManager
 
     ): Marker.OnMarkerDragListener {
 

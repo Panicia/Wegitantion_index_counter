@@ -6,7 +6,7 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polygon
 
-class PolygonHandler(
+class PolygonsManager(
     private val map : MapView) {
 
     private var polygon = Polygon()

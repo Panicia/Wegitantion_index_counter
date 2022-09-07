@@ -1,10 +1,10 @@
 package views.mapView
 
-import com.example.wegitantionindexcounter.MarkerAddAvailableBtn
 import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.util.GeoPoint
+import views.mapView.buttons.MarkerAddAvailableBtn
 
-class MarkersAdder(
+class MapEventsHandler(
     private val button : MarkerAddAvailableBtn,
     private val mapOverlayHandler : MapOverlayHandler
 

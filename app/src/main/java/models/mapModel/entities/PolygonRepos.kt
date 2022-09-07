@@ -6,11 +6,11 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "polygons", foreignKeys = [ForeignKey(
-    entity = State::class,
+    entity = StateRepos::class,
     childColumns = ["stateId"],
     parentColumns = ["id"]
 )])
-data class Polygon(
+data class PolygonRepos(
     @PrimaryKey(autoGenerate = true) val id: Long,
     val name: String,
     val image: Bitmap,
