@@ -18,6 +18,7 @@ import org.osmdroid.config.Configuration
 import viewModels.mapViewModel.MapViewModel
 import views.mapView.MapOverlayHandler
 import views.mapView.MapEventsHandler
+import views.mapView.MapStateHandler
 import views.mapView.buttons.MarkerAddAvailableBtn
 import views.mapView.buttons.RotateMapBtn
 
@@ -28,15 +29,16 @@ class MainActivity : AppCompatActivity() {
 
     private val REQUEST_PERMISSIONS_REQUEST_CODE = 1
 
-    private lateinit var map : MapView
-    private lateinit var mapController : IMapController
+    private lateinit var map: MapView
+    //private lateinit var mapController: IMapController
 
-    private lateinit var binding : ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
 
-    private lateinit var markersAdder : MapEventsHandler
-    private lateinit var mapOverlayHandler : MapOverlayHandler
-    private lateinit var rotateMapBtn : RotateMapBtn
-    private lateinit var markerAddAvailableBtn : MarkerAddAvailableBtn
+    private lateinit var markersAdder: MapEventsHandler
+    private lateinit var mapOverlayHandler: MapOverlayHandler
+    private lateinit var rotateMapBtn: RotateMapBtn
+    private lateinit var markerAddAvailableBtn: MarkerAddAvailableBtn
+    private lateinit var mapStateHandler: MapStateHandler
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +51,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        mapViewModel.mapState
+        mapStateHandler.loadMap(map, markersAdder)
+
         binding.buttonRotate.setOnClickListener {
             rotateMapBtn.pressButton()
         }
@@ -64,6 +67,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
+        mapStateHandler.convertAndSaveMap(map)
         map.onPause()
     }
 
@@ -89,9 +93,10 @@ class MainActivity : AppCompatActivity() {
         rotateMapBtn = RotateMapBtn(mapOverlayHandler, binding.buttonRotate)
         markerAddAvailableBtn = MarkerAddAvailableBtn(mapOverlayHandler, binding.buttonMarkersAddAvailable)
         markersAdder = MapEventsHandler(markerAddAvailableBtn, mapOverlayHandler)
-        setMapDefaults(map)
+        mapStateHandler = MapStateHandler(mapViewModel)
+        //setMapDefaults(map)
     }
-
+    /*
     private fun setMapDefaults(map : MapView) {
         val mapEventsOverlay = MapEventsOverlay(markersAdder)
         map.overlays.add(mapEventsOverlay)
@@ -108,5 +113,5 @@ class MainActivity : AppCompatActivity() {
         map.overlays.add(scaleBarOverlay)
         val startPointAhrangelsk = GeoPoint(64.54008896758883, 40.51580601698074)
         mapController.setCenter(startPointAhrangelsk)
-    }
+    }*/
 }

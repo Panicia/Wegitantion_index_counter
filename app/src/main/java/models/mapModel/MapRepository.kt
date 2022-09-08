@@ -19,6 +19,17 @@ class MapRepository(
 
     lateinit var mapState: MapState
 
+    suspend fun checkStateSavedIsExist(): Boolean {
+        var exist = false
+        withContext(Dispatchers.IO) {
+            val states = mapDao.getAllStates()
+            if(states.isNotEmpty()) {
+                exist = true
+            }
+        }
+        return exist
+    }
+
     suspend fun saveState(mapState: MapState, stateId: Long) {
         withContext(Dispatchers.IO) {
             deleteStateFromDatabase(stateId)
@@ -39,32 +50,38 @@ class MapRepository(
         }
     }
 
+    suspend fun getNextPolygonId(): Long {
+        var lastId = 0L
+        withContext(Dispatchers.IO) {
+            lastId = getNextPolygonIdFromDatabase()
+        }
+        return lastId
+    }
+
+    private fun getNextPolygonIdFromDatabase(): Long {
+        val polygons = mapDao.getAllPolygons()
+        if(polygons.isNotEmpty()) {
+            return polygons.count().toLong()
+        }
+        else
+            return 0L
+    }
+
     private fun saveStateToDataBase(mapState: MapState, stateId: Long) {
         val newState = StateRepos(stateId, mapState.mapZoom, mapState.mapCenter.latitude, mapState.mapCenter.longitude)
         mapDao.insertState(newState)
         if(mapState.myPolygons.isNotEmpty()) {
             for (myPolygon in mapState.myPolygons) {
-                val newPolygonId = getNewPolygonId()
-                val newPolygon = PolygonRepos(newPolygonId, myPolygon.title, null, stateId)
+                val newPolygon = PolygonRepos(myPolygon.index, myPolygon.title, null, stateId)
                 mapDao.insertPolygon(newPolygon)
                 if(myPolygon.actualPoints.isNotEmpty()) {
                     for (point in myPolygon.actualPoints) {
-                        val newMarker =
-                            MarkerRepos(null, point.latitude, point.longitude, newPolygonId)
+                        val newMarker = MarkerRepos(null, point.latitude, point.longitude, myPolygon.index)
                         mapDao.insertMarker(newMarker)
                     }
                 }
             }
         }
-    }
-
-    private fun getNewPolygonId(): Long {
-        val polygons = mapDao.getAllPolygons()
-        if(polygons.isEmpty()) {
-            return 0
-        }
-        else
-            return polygons.count().toLong()
     }
 
     private fun loadStateFromDataBase(stateId: Long) {

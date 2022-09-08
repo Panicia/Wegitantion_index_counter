@@ -13,49 +13,52 @@ import viewModels.mapViewModel.MyPolygon
 
 class MapStateHandler(
     private val mapViewModel : MapViewModel
-) {
-    private lateinit var mapOverlays : List<Overlay>
-    private lateinit var mapEventsOverlay : MapEventsOverlay
+    ) {
 
-    private var mapWasSaved = false
-
-    init {
-
+    fun convertAndSaveMap(map : MapView) {
+        convertMapToState(map)
+        mapViewModel.saveState()
     }
 
-    fun saveMapToMapState(map : MapView) {
-        val mapCenter = GeoPoint(map.mapCenter.latitude, map.mapCenter.longitude)
-        val mapZoom = map.zoomLevelDouble
-        val mapPolygons = arrayListOf<MyPolygon>()
-        for(i in map.overlays) {
-            if(i is Polygon) {
-
-                val myPolygon = MyPolygon()
-            }
+    fun loadMap(map : MapView, markersAdder: MapEventsHandler) {
+        if(mapViewModel.stateExist) {
+            restoreMapFromState(map)
+            setMapDefaults(map, markersAdder)
         }
-        mapViewModel.mapState = MapState(mapCenter, mapZoom, mapPolygons)
-        mapWasSaved = true
+        else {
+            loadDefaultMapState(map, markersAdder)
+        }
     }
 
-    fun restoreMapFromMapState(map : MapView) {
-
+    private fun restoreMapFromState(map : MapView) {
+        for(polygon in mapViewModel.mapState.myPolygons) {
+            map.overlays.add(polygon)
+        }
     }
 
-    fun defaultMapState(map : MapView, markersAdder: MapEventsHandler) {
+    private fun loadDefaultMapState(map : MapView, markersAdder: MapEventsHandler) {
         setMapDefaults(map, markersAdder)
         setMapDefaultsBasis(map)
     }
 
-    private fun setMapSaved(map : MapView) {
-        setMapDefaultsBasis(map)
-    }
-
-    private fun setMapOverlays(map : MapView) {
-
+    private fun convertMapToState(map: MapView) {
+        val mapCenter = GeoPoint(map.mapCenter.latitude, map.mapCenter.longitude)
+        val mapZoom = map.zoomLevelDouble
+        val mapPolygons = arrayListOf<MyPolygon>()
+        for(i in 0 until map.overlays.count()) {
+            if(map.overlays[i] is Polygon) {
+                val overlayPolygon = map.overlays[i] as Polygon
+                val myPolygon = MyPolygon(mapViewModel.getLastPolygonId())
+                myPolygon.points = overlayPolygon.actualPoints
+                myPolygon.title = overlayPolygon.title
+                mapPolygons.add(myPolygon)
+            }
+        }
+        mapViewModel.mapState = MapState(mapCenter, mapZoom, mapPolygons)
     }
 
     private fun setMapDefaults(map : MapView, markersAdder : MapEventsHandler) {
-        mapEventsOverlay = MapEventsOverlay(markersAdder)
+        val mapEventsOverlay = MapEventsOverlay(markersAdder)
         map.overlays.add(mapEventsOverlay)
         map.controller.setZoom(mapViewModel.mapState.mapZoom)
         map.controller.setCenter(mapViewModel.mapState.mapCenter)

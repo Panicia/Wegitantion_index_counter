@@ -12,6 +12,7 @@ class MapViewModel(
     private val mapRepository : MapRepository
 ) : ViewModel() {
 
+    var stateExist = false
     var mapState = MapState(mapRepository.startPointAhrangelsk, mapRepository.defaultZoom, ArrayList())
 
     init {
@@ -22,11 +23,23 @@ class MapViewModel(
         viewModelScope.launch {
             mapRepository.saveState(mapState, mapRepository.defaultStateId)
         }
+        stateExist = true
+    }
+
+    fun getLastPolygonId() : Long {
+        var lastId = 0L
+        viewModelScope.launch {
+            lastId = mapRepository.getNextPolygonId()
+        }
+        return lastId
     }
 
     private fun updateState() {
         viewModelScope.launch {
-            mapState = mapRepository.loadState(mapRepository.defaultStateId)
+            stateExist = mapRepository.checkStateSavedIsExist()
+            if(stateExist) {
+                mapState = mapRepository.loadState(mapRepository.defaultStateId)
+            }
         }
     }
 }
