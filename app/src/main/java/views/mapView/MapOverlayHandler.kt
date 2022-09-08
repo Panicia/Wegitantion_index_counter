@@ -5,6 +5,7 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Polygon
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
 import org.osmdroid.views.overlay.infowindow.InfoWindow
+import viewModels.mapViewModel.MyPolygon
 
 class MapOverlayHandler(
     private val map : MapView,
@@ -29,6 +30,10 @@ class MapOverlayHandler(
 
     fun placeMarker(p: GeoPoint) {
         markersManager.createMarker(p)
+    }
+
+    fun placePolygons(myPolygons: Array<MyPolygon>) {
+        polygonsManager
     }
 
     fun deleteAll() {

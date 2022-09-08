@@ -3,16 +3,17 @@ package views.mapView
 import android.util.DisplayMetrics
 import android.view.View
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.*
 import viewModels.mapViewModel.MapState
 import viewModels.mapViewModel.MapViewModel
+import viewModels.mapViewModel.MyPolygon
 
 class MapStateHandler(
     private val mapViewModel : MapViewModel
 ) {
-    private var mapState = mapViewModel.mapState
     private lateinit var mapOverlays : List<Overlay>
     private lateinit var mapEventsOverlay : MapEventsOverlay
 
@@ -22,11 +23,21 @@ class MapStateHandler(
 
     }
 
-    fun saveMapState(map : MapView) {
+    fun saveMapToMapState(map : MapView) {
+        val mapCenter = GeoPoint(map.mapCenter.latitude, map.mapCenter.longitude)
+        val mapZoom = map.zoomLevelDouble
+        val mapPolygons = arrayListOf<MyPolygon>()
+        for(i in map.overlays) {
+            if(i is Polygon) {
+
+                val myPolygon = MyPolygon()
+            }
+        }
+        mapViewModel.mapState = MapState(mapCenter, mapZoom, mapPolygons)
         mapWasSaved = true
     }
 
-    fun restoreMap(map : MapView) {
+    fun restoreMapFromMapState(map : MapView) {
 
     }
 

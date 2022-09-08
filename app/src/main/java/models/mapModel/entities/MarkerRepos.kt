@@ -10,7 +10,7 @@ import androidx.room.PrimaryKey
     parentColumns = ["id"]
 )])
 data class MarkerRepos(
-    @PrimaryKey(autoGenerate = true) val id: Long,
+    @PrimaryKey(autoGenerate = true) val id: Long?,
     val lat: Double,
     val lon: Double,
     val polId: Long

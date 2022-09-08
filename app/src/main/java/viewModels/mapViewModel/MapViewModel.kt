@@ -18,9 +18,15 @@ class MapViewModel(
         updateState()
     }
 
+    fun saveState() {
+        viewModelScope.launch {
+            mapRepository.saveState(mapState, mapRepository.defaultStateId)
+        }
+    }
+
     private fun updateState() {
         viewModelScope.launch {
-            mapState = mapRepository.loadState()
+            mapState = mapRepository.loadState(mapRepository.defaultStateId)
         }
     }
 }

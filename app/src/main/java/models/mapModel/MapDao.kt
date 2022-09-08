@@ -9,8 +9,8 @@ import models.mapModel.entities.StateRepos
 interface MapDao {
 
     // State functions
-    @Insert
-    fun insertState(state: StateRepos)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertState(vararg state: StateRepos)
 
     @Delete
     fun deleteStates(vararg state: StateRepos)
@@ -19,41 +19,35 @@ interface MapDao {
     fun getState(stateId : Long): StateRepos?
 
     @Query("SELECT * FROM states")
-    fun getAllStates() : List<StateRepos>
+    fun getAllStates() : Array<StateRepos>
 
     @Update
     fun updateStates(vararg state: StateRepos)
 
 
     // Polygon functions
-    @Insert
-    fun insertPolygon(polygon: PolygonRepos)
-
-    @Insert
-    fun insertPolygons(polygon: List<PolygonRepos>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertPolygon(vararg polygon: PolygonRepos)
 
     @Delete
     fun deletePolygons(vararg polygon: PolygonRepos)
 
     @Query("SELECT * FROM polygons WHERE stateId = :stateId")
-    fun getPolygonsFromState(stateId : Long): List<PolygonRepos>
+    fun getPolygonsFromState(stateId : Long): Array<PolygonRepos>
 
     @Query("SELECT * FROM polygons WHERE id = :polId")
     fun getPolygon(polId: Long): PolygonRepos?
 
     @Query("SELECT * FROM polygons")
-    fun getAllPolygons() : List<PolygonRepos>
+    fun getAllPolygons() : Array<PolygonRepos>
 
     @Update
     fun updatePolygons(vararg polygon: PolygonRepos)
 
 
     // Marker functions
-    @Insert
-    fun insertMarker(marker: MarkerRepos)
-
-    @Insert
-    fun insertMarkers(markers: List<MarkerRepos>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertMarker(vararg marker: MarkerRepos)
 
     @Delete
     fun deleteMarkers(vararg marker: MarkerRepos)
@@ -62,16 +56,16 @@ interface MapDao {
             "INNER JOIN polygons ON polygons.id = markers.polId " +
             "INNER JOIN states ON states.id = polygons.stateId " +
             "WHERE states.id = :stateId")
-    fun getMarkersFromState(stateId: Long): List<MarkerRepos>
+    fun getMarkersFromState(stateId: Long): Array<MarkerRepos>
 
     @Query("SELECT * FROM markers WHERE polId = :polId")
-    fun getMarkersFromPoly(polId: Long): List<MarkerRepos>
+    fun getMarkersFromPoly(polId: Long): Array<MarkerRepos>
 
     @Query("SELECT * FROM markers WHERE id = :markerId")
     fun getMarker(markerId: Long): MarkerRepos?
 
     @Query("SELECT * FROM markers")
-    fun getAllMarkers() : List<MarkerRepos>
+    fun getAllMarkers() : Array<MarkerRepos>
 
     @Update
     fun updateMarkers(vararg marker: MarkerRepos)
