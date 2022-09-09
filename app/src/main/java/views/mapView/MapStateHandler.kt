@@ -23,7 +23,7 @@ class MapStateHandler(
     fun loadMap(map : MapView, markersAdder: MapEventsHandler) {
         if(mapViewModel.stateExist) {
             restoreMapFromState(map)
-            setMapDefaults(map, markersAdder)
+            setMapDefaultsBasis(map, markersAdder)
         }
         else {
             loadDefaultMapState(map, markersAdder)
@@ -31,14 +31,16 @@ class MapStateHandler(
     }
 
     private fun restoreMapFromState(map : MapView) {
-        for(polygon in mapViewModel.mapState.myPolygons) {
+        for(polygon in mapViewModel.mapStateLive.value!!.myPolygons) {
             map.overlays.add(polygon)
         }
+        map.controller.setZoom(mapViewModel.mapStateLive.value!!.mapZoom)
+        map.controller.setCenter(mapViewModel.mapStateLive.value!!.mapCenter)
     }
 
     private fun loadDefaultMapState(map : MapView, markersAdder: MapEventsHandler) {
-        setMapDefaults(map, markersAdder)
-        setMapDefaultsBasis(map)
+        setMapDefaults(map)
+        setMapDefaultsBasis(map, markersAdder)
     }
 
     private fun convertMapToState(map: MapView) {
@@ -54,17 +56,17 @@ class MapStateHandler(
                 mapPolygons.add(myPolygon)
             }
         }
-        mapViewModel.mapState = MapState(mapCenter, mapZoom, mapPolygons)
+        mapViewModel.mapStateLive.value = MapState(mapCenter, mapZoom, mapPolygons)
     }
 
-    private fun setMapDefaults(map : MapView, markersAdder : MapEventsHandler) {
+    private fun setMapDefaults(map: MapView) {
+        map.controller.setZoom(mapViewModel.defaultState.mapZoom)
+        map.controller.setCenter(mapViewModel.defaultState.mapCenter)
+    }
+
+    private fun setMapDefaultsBasis(map : MapView, markersAdder : MapEventsHandler) {
         val mapEventsOverlay = MapEventsOverlay(markersAdder)
         map.overlays.add(mapEventsOverlay)
-        map.controller.setZoom(mapViewModel.mapState.mapZoom)
-        map.controller.setCenter(mapViewModel.mapState.mapCenter)
-    }
-
-    private fun setMapDefaultsBasis(map : MapView) {
         map.setLayerType(View.LAYER_TYPE_HARDWARE, null)
         map.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE)
         map.setMultiTouchControls(true)

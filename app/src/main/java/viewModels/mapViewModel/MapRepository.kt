@@ -1,16 +1,16 @@
-package models.mapModel
+package viewModels.mapViewModel
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import models.mapModel.MapDao
 import models.mapModel.entities.MarkerRepos
 import models.mapModel.entities.PolygonRepos
 import models.mapModel.entities.StateRepos
 import org.osmdroid.util.GeoPoint
-import viewModels.mapViewModel.MapState
-import viewModels.mapViewModel.MyPolygon
 
 class MapRepository(
-    private val mapDao: MapDao) {
+    private val mapDao: MapDao
+) {
 
     val defaultStateId = 0L
 
@@ -19,14 +19,16 @@ class MapRepository(
 
     lateinit var mapState: MapState
 
-    suspend fun checkStateSavedIsExist(): Boolean {
+    fun getDefaultState(): MapState {
+        return MapState(startPointAhrangelsk, defaultZoom, ArrayList())
+    }
+
+    fun checkStateSavedIsExist(): Boolean {
         var exist = false
-        withContext(Dispatchers.IO) {
             val states = mapDao.getAllStates()
             if(states.isNotEmpty()) {
                 exist = true
             }
-        }
         return exist
     }
 
@@ -39,7 +41,7 @@ class MapRepository(
 
     suspend fun loadState(stateId: Long): MapState {
         withContext(Dispatchers.IO) {
-            loadStateFromDataBase(stateId)
+            mapState = loadStateFromDataBase(stateId)
         }
         return mapState
     }
@@ -76,7 +78,7 @@ class MapRepository(
                 mapDao.insertPolygon(newPolygon)
                 if(myPolygon.actualPoints.isNotEmpty()) {
                     for (point in myPolygon.actualPoints) {
-                        val newMarker = MarkerRepos(null, point.latitude, point.longitude, myPolygon.index)
+                        val newMarker = MarkerRepos(0, point.latitude, point.longitude, myPolygon.index)
                         mapDao.insertMarker(newMarker)
                     }
                 }
@@ -84,7 +86,7 @@ class MapRepository(
         }
     }
 
-    private fun loadStateFromDataBase(stateId: Long) {
+    private fun loadStateFromDataBase(stateId: Long): MapState {
         val state = mapDao.getState(stateId)
         if(state != null) {
             val center = GeoPoint(state.centerLat, state.centerLon)
@@ -106,6 +108,7 @@ class MapRepository(
                 }
             }
         }
+        return mapState
     }
 
     private fun deleteStateFromDatabase(stateId: Long) {

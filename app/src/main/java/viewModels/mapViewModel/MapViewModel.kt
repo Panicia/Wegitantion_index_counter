@@ -1,29 +1,30 @@
 package viewModels.mapViewModel
 
-import models.mapModel.MapRepository
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import org.osmdroid.util.GeoPoint
-import org.osmdroid.views.overlay.Marker
-import org.osmdroid.views.overlay.Polygon
 
 class MapViewModel(
     private val mapRepository : MapRepository
 ) : ViewModel() {
 
     var stateExist = false
-    var mapState = MapState(mapRepository.startPointAhrangelsk, mapRepository.defaultZoom, ArrayList())
+    val defaultState = mapRepository.getDefaultState()
+    var mapStateLive : MutableLiveData<MapState>
 
     init {
+        mapStateLive = MutableLiveData()
+        mapStateLive.value = defaultState
+        checkStateExistence()
         updateState()
     }
 
     fun saveState() {
         viewModelScope.launch {
-            mapRepository.saveState(mapState, mapRepository.defaultStateId)
+            mapRepository.saveState(mapStateLive.value!!, mapRepository.defaultStateId)
         }
-        stateExist = true
     }
 
     fun getLastPolygonId() : Long {
@@ -34,11 +35,14 @@ class MapViewModel(
         return lastId
     }
 
+    private fun checkStateExistence() {
+        stateExist = mapRepository.checkStateSavedIsExist()
+    }
+
     private fun updateState() {
         viewModelScope.launch {
-            stateExist = mapRepository.checkStateSavedIsExist()
             if(stateExist) {
-                mapState = mapRepository.loadState(mapRepository.defaultStateId)
+                mapStateLive.value = mapRepository.loadState(mapRepository.defaultStateId)
             }
         }
     }

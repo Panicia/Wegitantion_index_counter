@@ -5,6 +5,7 @@ import android.util.DisplayMetrics
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.Observer
 import androidx.preference.PreferenceManager
 import com.example.wegitantionindexcounter.databinding.ActivityMainBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -30,7 +31,6 @@ class MainActivity : AppCompatActivity() {
     private val REQUEST_PERMISSIONS_REQUEST_CODE = 1
 
     private lateinit var map: MapView
-    //private lateinit var mapController: IMapController
 
     private lateinit var binding: ActivityMainBinding
 
@@ -52,6 +52,8 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         mapStateHandler.loadMap(map, markersAdder)
+        mapViewModel.mapStateLive.observe(this, Observer {
+        })
 
         binding.buttonRotate.setOnClickListener {
             rotateMapBtn.pressButton()
@@ -94,24 +96,5 @@ class MainActivity : AppCompatActivity() {
         markerAddAvailableBtn = MarkerAddAvailableBtn(mapOverlayHandler, binding.buttonMarkersAddAvailable)
         markersAdder = MapEventsHandler(markerAddAvailableBtn, mapOverlayHandler)
         mapStateHandler = MapStateHandler(mapViewModel)
-        //setMapDefaults(map)
     }
-    /*
-    private fun setMapDefaults(map : MapView) {
-        val mapEventsOverlay = MapEventsOverlay(markersAdder)
-        map.overlays.add(mapEventsOverlay)
-        map.setLayerType(View.LAYER_TYPE_HARDWARE, null)
-        map.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE)
-        map.setMultiTouchControls(true)
-        mapController = map.controller
-        mapController.setZoom(10.0)
-        map.zoomController.setVisibility(CustomZoomButtonsController.Visibility.NEVER)
-        val dm : DisplayMetrics = map.context.resources.displayMetrics
-        val scaleBarOverlay = ScaleBarOverlay(map)
-        scaleBarOverlay.setCentred(true)
-        scaleBarOverlay.setScaleBarOffset(dm.widthPixels / 2, 10)
-        map.overlays.add(scaleBarOverlay)
-        val startPointAhrangelsk = GeoPoint(64.54008896758883, 40.51580601698074)
-        mapController.setCenter(startPointAhrangelsk)
-    }*/
 }

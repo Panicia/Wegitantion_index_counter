@@ -2,12 +2,14 @@ package models.mapModel.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.ForeignKey.CASCADE
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "markers", foreignKeys = [ForeignKey(
     entity = PolygonRepos::class,
     childColumns = ["polId"],
-    parentColumns = ["id"]
+    parentColumns = ["id"],
+    onDelete = CASCADE
 )])
 data class MarkerRepos(
     @PrimaryKey(autoGenerate = true) val id: Long?,
