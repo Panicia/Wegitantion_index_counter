@@ -1,7 +1,5 @@
 package viewModels.mapViewModel
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import models.mapModel.MapDao
 import models.mapModel.entities.MarkerRepos
 import models.mapModel.entities.PolygonRepos
@@ -14,59 +12,37 @@ class MapRepository(
 
     val defaultStateId = 0L
 
-    val defaultZoom = 10.0
-    val startPointAhrangelsk = GeoPoint(64.54008896758883, 40.51580601698074)
-
-    lateinit var mapState: MapState
+    private val defaultZoom = 10.0
+    private val startPointAhrangelsk = GeoPoint(64.54008896758883, 40.51580601698074)
 
     fun getDefaultState(): MapState {
         return MapState(startPointAhrangelsk, defaultZoom, ArrayList())
     }
 
     fun checkStateSavedIsExist(): Boolean {
-        var exist = false
-            val states = mapDao.getAllStates()
-            if(states.isNotEmpty()) {
-                exist = true
-            }
-        return exist
+        val states = mapDao.getAllStates()
+        return states.isNotEmpty()
     }
 
-    suspend fun saveState(mapState: MapState, stateId: Long) {
-        withContext(Dispatchers.IO) {
-            deleteStateFromDatabase(stateId)
-            saveStateToDataBase(mapState, stateId)
-        }
+    fun saveState(mapState: MapState, stateId: Long) {
+        deleteStateFromDatabase(stateId)
+        saveStateToDataBase(mapState, stateId)
     }
 
-    suspend fun loadState(stateId: Long): MapState {
-        withContext(Dispatchers.IO) {
-            mapState = loadStateFromDataBase(stateId)
-        }
-        return mapState
+    fun loadState(stateId: Long) : MapState{
+        return loadStateFromDataBase(stateId)
     }
 
-    suspend fun deleteAll() {
-        withContext(Dispatchers.IO) {
-            deleteAllFromDatabase()
-        }
-    }
-
-    suspend fun getNextPolygonId(): Long {
-        var lastId = 0L
-        withContext(Dispatchers.IO) {
-            lastId = getNextPolygonIdFromDatabase()
-        }
-        return lastId
+    fun deleteAll() {
+        deleteAllFromDatabase()
     }
 
     private fun getNextPolygonIdFromDatabase(): Long {
         val polygons = mapDao.getAllPolygons()
-        if(polygons.isNotEmpty()) {
-            return polygons.count().toLong()
-        }
-        else
-            return 0L
+        return if(polygons.isNotEmpty()) {
+            polygons.count().toLong()
+        } else
+            0L
     }
 
     private fun saveStateToDataBase(mapState: MapState, stateId: Long) {
@@ -74,11 +50,12 @@ class MapRepository(
         mapDao.insertState(newState)
         if(mapState.myPolygons.isNotEmpty()) {
             for (myPolygon in mapState.myPolygons) {
-                val newPolygon = PolygonRepos(myPolygon.index, myPolygon.title, null, stateId)
+                val nextPolygonIndex = getNextPolygonIdFromDatabase()
+                val newPolygon = PolygonRepos(nextPolygonIndex, myPolygon.title, null, stateId)
                 mapDao.insertPolygon(newPolygon)
                 if(myPolygon.actualPoints.isNotEmpty()) {
                     for (point in myPolygon.actualPoints) {
-                        val newMarker = MarkerRepos(0, point.latitude, point.longitude, myPolygon.index)
+                        val newMarker = MarkerRepos(0, point.latitude, point.longitude, nextPolygonIndex)
                         mapDao.insertMarker(newMarker)
                     }
                 }
@@ -88,27 +65,28 @@ class MapRepository(
 
     private fun loadStateFromDataBase(stateId: Long): MapState {
         val state = mapDao.getState(stateId)
+        var finalZoom = defaultZoom
+        var finalCenter = startPointAhrangelsk
+        val finalMyPolygons = ArrayList<MyPolygon>()
         if(state != null) {
-            val center = GeoPoint(state.centerLat, state.centerLon)
-            mapState = MapState(center, state.zoom, ArrayList())
+            finalCenter = GeoPoint(state.centerLat, state.centerLon)
+            finalZoom = state.zoom
         }
-        else
-            mapState = MapState(startPointAhrangelsk, defaultZoom, ArrayList())
         val polygons = mapDao.getPolygonsFromState(stateId)
         if(polygons.isNotEmpty()) {
             for (polygon in polygons) {
-                val myPolygon = MyPolygon(polygon.id)
+                val myPolygon = MyPolygon()
                 val markersFromPoly = mapDao.getMarkersFromPoly(polygon.id)
                 if(markersFromPoly.isNotEmpty()) {
                     for (marker in markersFromPoly) {
                         val geoPoint = GeoPoint(marker.lat, marker.lon)
                         myPolygon.addPoint(geoPoint)
                     }
-                    mapState.myPolygons.add(myPolygon)
+                    finalMyPolygons.add(myPolygon)
                 }
             }
         }
-        return mapState
+        return MapState(finalCenter, finalZoom, finalMyPolygons)
     }
 
     private fun deleteStateFromDatabase(stateId: Long) {

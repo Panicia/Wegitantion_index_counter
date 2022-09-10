@@ -16,18 +16,13 @@ class MapStateHandler(
     ) {
 
     fun convertAndSaveMap(map : MapView) {
-        convertMapToState(map)
-        mapViewModel.saveState()
+        val state = convertMapToState(map)
+        mapViewModel.saveState(state)
     }
 
     fun loadMap(map : MapView, markersAdder: MapEventsHandler) {
-        if(mapViewModel.stateExist) {
-            restoreMapFromState(map)
-            setMapDefaultsBasis(map, markersAdder)
-        }
-        else {
-            loadDefaultMapState(map, markersAdder)
-        }
+        restoreMapFromState(map)
+        setMapDefaultsBasis(map, markersAdder)
     }
 
     private fun restoreMapFromState(map : MapView) {
@@ -38,30 +33,20 @@ class MapStateHandler(
         map.controller.setCenter(mapViewModel.mapStateLive.value!!.mapCenter)
     }
 
-    private fun loadDefaultMapState(map : MapView, markersAdder: MapEventsHandler) {
-        setMapDefaults(map)
-        setMapDefaultsBasis(map, markersAdder)
-    }
-
-    private fun convertMapToState(map: MapView) {
+    private fun convertMapToState(map: MapView): MapState {
         val mapCenter = GeoPoint(map.mapCenter.latitude, map.mapCenter.longitude)
         val mapZoom = map.zoomLevelDouble
         val mapPolygons = arrayListOf<MyPolygon>()
         for(i in 0 until map.overlays.count()) {
             if(map.overlays[i] is Polygon) {
                 val overlayPolygon = map.overlays[i] as Polygon
-                val myPolygon = MyPolygon(mapViewModel.getLastPolygonId())
+                val myPolygon = MyPolygon()
                 myPolygon.points = overlayPolygon.actualPoints
                 myPolygon.title = overlayPolygon.title
                 mapPolygons.add(myPolygon)
             }
         }
-        mapViewModel.mapStateLive.value = MapState(mapCenter, mapZoom, mapPolygons)
-    }
-
-    private fun setMapDefaults(map: MapView) {
-        map.controller.setZoom(mapViewModel.defaultState.mapZoom)
-        map.controller.setCenter(mapViewModel.defaultState.mapCenter)
+        return MapState(mapCenter, mapZoom, mapPolygons)
     }
 
     private fun setMapDefaultsBasis(map : MapView, markersAdder : MapEventsHandler) {

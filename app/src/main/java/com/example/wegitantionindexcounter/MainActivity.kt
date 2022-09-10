@@ -53,6 +53,7 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         mapStateHandler.loadMap(map, markersAdder)
         mapViewModel.mapStateLive.observe(this, Observer {
+            mapStateHandler.loadMap(map, markersAdder)
         })
 
         binding.buttonRotate.setOnClickListener {
