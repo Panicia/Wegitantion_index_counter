@@ -21,6 +21,7 @@ class MapStateHandler(
     }
 
     fun loadMap(map : MapView, markersAdder: MapEventsHandler) {
+        deleteMapOverlays(map)
         restoreMapFromState(map)
         setMapDefaultsBasis(map, markersAdder)
     }
@@ -36,7 +37,7 @@ class MapStateHandler(
     private fun convertMapToState(map: MapView): MapState {
         val mapCenter = GeoPoint(map.mapCenter.latitude, map.mapCenter.longitude)
         val mapZoom = map.zoomLevelDouble
-        val mapPolygons = arrayListOf<MyPolygon>()
+        val mapPolygons = ArrayList<MyPolygon>()
         for(i in 0 until map.overlays.count()) {
             if(map.overlays[i] is Polygon) {
                 val overlayPolygon = map.overlays[i] as Polygon
@@ -61,5 +62,9 @@ class MapStateHandler(
         scaleBarOverlay.setCentred(true)
         scaleBarOverlay.setScaleBarOffset(dm.widthPixels / 2, 10)
         map.overlays.add(scaleBarOverlay)
+    }
+
+    private fun deleteMapOverlays(map: MapView) {
+        map.overlays.clear()
     }
 }

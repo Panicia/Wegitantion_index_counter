@@ -1,5 +1,9 @@
 package viewModels.mapViewModel
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import models.mapModel.MapDao
 import models.mapModel.entities.MarkerRepos
 import models.mapModel.entities.PolygonRepos
@@ -24,12 +28,14 @@ class MapRepository(
         return states.isNotEmpty()
     }
 
-    fun saveState(mapState: MapState, stateId: Long) {
-        deleteStateFromDatabase(stateId)
-        saveStateToDataBase(mapState, stateId)
+    suspend fun saveState(mapState: MapState, stateId: Long) {
+        withContext(Dispatchers.IO) {
+            deleteStateFromDatabase(stateId)
+            saveStateToDataBase(mapState, stateId)
+        }
     }
 
-    fun loadState(stateId: Long) : MapState{
+    fun loadState(stateId: Long) : MapState {
         return loadStateFromDataBase(stateId)
     }
 

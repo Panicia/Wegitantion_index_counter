@@ -2,7 +2,6 @@ package views.mapView
 
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
-import org.osmdroid.views.overlay.Polygon
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
 import org.osmdroid.views.overlay.infowindow.InfoWindow
 import viewModels.mapViewModel.MyPolygon

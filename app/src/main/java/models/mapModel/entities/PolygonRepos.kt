@@ -1,6 +1,5 @@
 package models.mapModel.entities
 
-import android.graphics.Bitmap
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
