@@ -39,12 +39,8 @@ class MapStateHandler(
         val mapZoom = map.zoomLevelDouble
         val mapPolygons = ArrayList<MyPolygon>()
         for(i in 0 until map.overlays.count()) {
-            if(map.overlays[i] is Polygon) {
-                val overlayPolygon = map.overlays[i] as Polygon
-                val myPolygon = MyPolygon()
-                myPolygon.points = overlayPolygon.actualPoints
-                myPolygon.title = overlayPolygon.title
-                mapPolygons.add(myPolygon)
+            if(map.overlays[i] is MyPolygon) {
+                mapPolygons.add(map.overlays[i] as MyPolygon)
             }
         }
         return MapState(mapCenter, mapZoom, mapPolygons)

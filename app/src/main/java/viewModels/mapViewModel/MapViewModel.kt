@@ -21,25 +21,25 @@ class MapViewModel(
 
     fun saveState(state: MapState) {
         mapStateLive.value = state
-        viewModelScope.launch {
+        //viewModelScope.launch {
             mapRepository.saveState(state, mapRepository.defaultStateId)
-        }
+        //}
     }
 
     private fun updateState() {
         var newState = mapStateLive.value!!
-        viewModelScope.launch{
+        //viewModelScope.launch {
             var stateExist: Boolean
-            withContext(Dispatchers.IO) {
+            //withContext(Dispatchers.IO) {
                 stateExist = mapRepository.checkStateSavedIsExist()
 
                 if (stateExist) {
                     newState = mapRepository.loadState(mapRepository.defaultStateId)
                 }
-            }
-            withContext(Dispatchers.Main) {
+            //}
+            //withContext(Dispatchers.Main) {
                 mapStateLive.value = newState
-            }
-        }
+            //}
+        //}
     }
 }

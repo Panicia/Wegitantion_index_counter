@@ -5,11 +5,12 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polygon
+import viewModels.mapViewModel.MyPolygon
 
 class PolygonsManager(
     private val map : MapView) {
 
-    private var polygon = Polygon()
+    private var polygon = MyPolygon()
     private lateinit var geoPointsArray : ArrayList<GeoPoint>
 
     fun createNewPolygon(markersArray: ArrayList<Marker>) {

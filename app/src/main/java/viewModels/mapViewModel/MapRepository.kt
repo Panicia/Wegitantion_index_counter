@@ -28,11 +28,11 @@ class MapRepository(
         return states.isNotEmpty()
     }
 
-    suspend fun saveState(mapState: MapState, stateId: Long) {
-        withContext(Dispatchers.IO) {
+    fun saveState(mapState: MapState, stateId: Long) {
+        //withContext(Dispatchers.IO) {
             deleteStateFromDatabase(stateId)
             saveStateToDataBase(mapState, stateId)
-        }
+        //}
     }
 
     fun loadState(stateId: Long) : MapState {
