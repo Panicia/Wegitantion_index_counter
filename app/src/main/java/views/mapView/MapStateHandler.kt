@@ -27,6 +27,7 @@ class MapStateHandler(
     }
 
     private fun restoreMapFromState(map : MapView) {
+        mapViewModel.updateState()
         for(polygon in mapViewModel.mapStateLive.value!!.myPolygons) {
             map.overlays.add(polygon)
         }

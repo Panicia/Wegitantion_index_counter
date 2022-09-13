@@ -52,9 +52,10 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         mapStateHandler.loadMap(map, markersAdder)
-        mapViewModel.mapStateLive.observe(this, Observer {
+
+        mapViewModel.mapStateLive.observe(this) {
             mapStateHandler.loadMap(map, markersAdder)
-        })
+        }
 
         binding.buttonRotate.setOnClickListener {
             rotateMapBtn.pressButton()
