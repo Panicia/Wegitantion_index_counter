@@ -27,12 +27,13 @@ class MapStateHandler(
     }
 
     private fun restoreMapFromState(map : MapView) {
-        mapViewModel.updateState()
-        for(polygon in mapViewModel.mapStateLive.value!!.myPolygons) {
-            map.overlays.add(polygon)
+        if(mapViewModel.getMapStateLive().value!!.myPolygons.isNotEmpty()) {
+            for (polygon in mapViewModel.getMapStateLive().value!!.myPolygons) {
+                map.overlays.add(polygon)
+            }
         }
-        map.controller.setZoom(mapViewModel.mapStateLive.value!!.mapZoom)
-        map.controller.setCenter(mapViewModel.mapStateLive.value!!.mapCenter)
+        map.controller.setZoom(mapViewModel.getMapStateLive().value!!.mapZoom)
+        map.controller.setCenter(mapViewModel.getMapStateLive().value!!.mapCenter)
     }
 
     private fun convertMapToState(map: MapView): MapState {

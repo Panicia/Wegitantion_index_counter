@@ -1,5 +1,6 @@
 package viewModels.mapViewModel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,12 +12,16 @@ class MapViewModel(
     private val mapRepository : MapRepository
 ) : ViewModel() {
 
-    var mapStateLive = MutableLiveData<MapState>()
+    private var mapStateLive = MutableLiveData<MapState>()
     private val defaultState = mapRepository.getDefaultState()
 
     init {
         mapStateLive.value = defaultState
         updateState()
+    }
+
+    fun getMapStateLive() : LiveData<MapState> {
+        return mapStateLive
     }
 
     fun saveState(state: MapState) {

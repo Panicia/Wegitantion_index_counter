@@ -16,6 +16,7 @@ import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.*
 import org.osmdroid.config.Configuration
+import viewModels.mapViewModel.MapState
 import viewModels.mapViewModel.MapViewModel
 import views.mapView.MapOverlayHandler
 import views.mapView.MapEventsHandler
@@ -48,14 +49,20 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         initAll()
 
-        mapViewModel.mapStateLive.observe(this) {
-            mapStateHandler.loadMap(map, markersAdder)
-        }
+        mapStateHandler.loadMap(map, markersAdder)
+
+        //mapViewModel.getMapStateLive().observe(this) {
+            //mapStateHandler.loadMap(map, markersAdder)
+        //}
+    }
+
+    override fun onStart() {
+        super.onStart()
+
     }
 
     override fun onResume() {
         super.onResume()
-        mapStateHandler.loadMap(map, markersAdder)
 
         binding.buttonRotate.setOnClickListener {
             rotateMapBtn.pressButton()

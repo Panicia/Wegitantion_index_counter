@@ -75,18 +75,19 @@ class MapRepository(
         if(state != null) {
             finalCenter = GeoPoint(state.centerLat, state.centerLon)
             finalZoom = state.zoom
-        }
-        val polygons = mapDao.getPolygonsFromState(stateId)
-        if(polygons.isNotEmpty()) {
-            for (polygon in polygons) {
-                val myPolygon = MyPolygon()
-                val markersFromPoly = mapDao.getMarkersFromPoly(polygon.id)
-                if(markersFromPoly.isNotEmpty()) {
-                    for (marker in markersFromPoly) {
-                        val geoPoint = GeoPoint(marker.lat, marker.lon)
-                        myPolygon.addPoint(geoPoint)
+            val polygons = mapDao.getPolygonsFromState(stateId)
+            if (polygons.isNotEmpty()) {
+                for (polygon in polygons) {
+                    val myPolygon = MyPolygon()
+                    myPolygon.title = polygon.name
+                    val markersFromPoly = mapDao.getMarkersFromPoly(polygon.id)
+                    if (markersFromPoly.isNotEmpty()) {
+                        for (marker in markersFromPoly) {
+                            val geoPoint = GeoPoint(marker.lat, marker.lon)
+                            myPolygon.addPoint(geoPoint)
+                        }
+                        finalMyPolygons.add(myPolygon)
                     }
-                    finalMyPolygons.add(myPolygon)
                 }
             }
         }
