@@ -47,15 +47,15 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initAll()
+
+        mapViewModel.mapStateLive.observe(this) {
+            mapStateHandler.loadMap(map, markersAdder)
+        }
     }
 
     override fun onResume() {
         super.onResume()
         mapStateHandler.loadMap(map, markersAdder)
-
-        mapViewModel.mapStateLive.observe(this) {
-            mapStateHandler.loadMap(map, markersAdder)
-        }
 
         binding.buttonRotate.setOnClickListener {
             rotateMapBtn.pressButton()
