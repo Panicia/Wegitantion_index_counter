@@ -17,7 +17,6 @@ class MapViewModel(
 
     init {
         mapStateLive.value = defaultState
-        updateState()
     }
 
     fun getMapStateLive() : LiveData<MapState> {
@@ -25,13 +24,16 @@ class MapViewModel(
     }
 
     fun saveState(state: MapState) {
-        //mapStateLive.value = state
-        mapRepository.saveState(state, mapRepository.defaultStateId)
+        viewModelScope.launch(Dispatchers.IO) {
+            mapRepository.saveState(state, mapRepository.defaultStateId)
+        }
     }
 
     fun updateState() {
-        if (mapRepository.checkStateSavedIsExist()) {
-            mapStateLive.value = mapRepository.loadState(mapRepository.defaultStateId)
+        viewModelScope.launch(Dispatchers.IO) {
+            if (mapRepository.checkStateSavedIsExist()) {
+                mapStateLive.postValue(mapRepository.loadState(mapRepository.defaultStateId))
+            }
         }
     }
 }

@@ -15,6 +15,10 @@ class MapStateHandler(
     private val mapViewModel : MapViewModel
     ) {
 
+    init {
+        mapViewModel.updateState()
+    }
+
     fun convertAndSaveMap(map : MapView) {
         val state = convertMapToState(map)
         mapViewModel.saveState(state)
