@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.room.Room
 import models.mapModel.AppDatabase
 import models.mapModel.MapDao
-import viewModels.mapViewModel.MapRepository
+import models.mapModel.MapRepository
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module

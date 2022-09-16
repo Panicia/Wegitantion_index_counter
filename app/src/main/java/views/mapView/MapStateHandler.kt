@@ -25,7 +25,7 @@ class MapStateHandler(
     }
 
     fun loadMap(map : MapView, markersAdder: MapEventsHandler) {
-        deleteMapOverlays(map)
+        //deleteMapOverlays(map)
         restoreMapFromState(map)
         setMapDefaultsBasis(map, markersAdder)
     }

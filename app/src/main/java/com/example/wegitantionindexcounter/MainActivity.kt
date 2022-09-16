@@ -51,9 +51,9 @@ class MainActivity : AppCompatActivity() {
 
         mapStateHandler.loadMap(map, markersAdder)
 
-        mapViewModel.getMapStateLive().observe(this) {
+        /*mapViewModel.getMapStateLive().observe(this) {
             mapStateHandler.loadMap(map, markersAdder)
-        }
+        }*/
     }
 
     override fun onResume() {

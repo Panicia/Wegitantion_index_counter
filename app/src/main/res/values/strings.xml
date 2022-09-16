@@ -4,4 +4,6 @@
     <string name="text1">Something</string>
     <string name="delete">Delete</string>
     <string name="move">Move</string>
+    <string name="ndvi">NDVI</string>
+    <string name="edit">Edit</string>
 </resources>

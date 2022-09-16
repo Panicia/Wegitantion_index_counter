@@ -11,8 +11,8 @@ class MapOverlayHandler(
     )  {
 
     private val rotationGestureOverlay = RotationGestureOverlay(map)
-    private val polygonsManager = PolygonsManager(map)
     private val markersManager = MarkersManager(map, polygonsManager)
+    private val polygonsManager = PolygonsManager(map, markersManager)
 
     init {
         map.overlays.add(rotationGestureOverlay)
@@ -31,7 +31,7 @@ class MapOverlayHandler(
         markersManager.createMarker(p)
     }
 
-    fun placePolygons(myPolygons: Array<MyPolygon>) {
+    fun placePolygon(myPolygons: Array<MyPolygon>) {
         polygonsManager
     }
 

@@ -1,14 +1,11 @@
-package viewModels.mapViewModel
+package models.mapModel
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import models.mapModel.MapDao
 import models.mapModel.entities.MarkerRepos
 import models.mapModel.entities.PolygonRepos
 import models.mapModel.entities.StateRepos
 import org.osmdroid.util.GeoPoint
+import viewModels.mapViewModel.MapState
+import viewModels.mapViewModel.MyPolygon
 
 class MapRepository(
     private val mapDao: MapDao

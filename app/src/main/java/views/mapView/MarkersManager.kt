@@ -77,7 +77,7 @@ class MarkersManager(
 
     inner class MarkerWindow(
         private val map: MapView,
-        private val marker: Marker,
+        private val marker: Marker
 
     ) : InfoWindow(R.layout.marker_layout, map) {
 

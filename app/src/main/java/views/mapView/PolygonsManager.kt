@@ -1,55 +1,93 @@
 package views.mapView
 
 import android.graphics.Color
+import android.widget.Button
+import android.widget.TextView
+import com.example.wegitantionindexcounter.R
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polygon
+import org.osmdroid.views.overlay.infowindow.InfoWindow
 import viewModels.mapViewModel.MyPolygon
 
 class PolygonsManager(
-    private val map : MapView) {
+    private val map : MapView,
+    private val markersManager: MarkersManager
+    ) {
+    private val polygons = ArrayList<MyPolygon>()
+    var activePolygon : MyPolygon? = null
 
-    private var polygon = MyPolygon()
-    private lateinit var geoPointsArray : ArrayList<GeoPoint>
-
-    fun createNewPolygon(markersArray: ArrayList<Marker>) {
-        if(markersArray.size > 0) {
-            geoPointsArray = makeGeoPointsArray(markersArray)
-            createPolygonFromPoints(geoPointsArray)
-        }
+    fun startEditPolygon(polygon: MyPolygon) {
+        activePolygon = polygon
     }
 
-    private fun makeGeoPointsArray(markersArray : ArrayList<Marker>) : ArrayList<GeoPoint> {
-        val array = ArrayList<GeoPoint>()
-        for(i in 0 until markersArray.size) {
-            val geoPoint = GeoPoint(markersArray[i].position)
-            array.add(geoPoint)
-        }
-        array.add(array[0])
-        return array
-    }
-
-    fun redrawPolygonIfNeeded(markersArray: ArrayList<Marker>) {
-        if(markersArray.size > 2) {
-            deletePolygon()
-            geoPointsArray = makeGeoPointsArray(markersArray)
-            createPolygonFromPoints(geoPointsArray)
+    fun stopEditPolygon() {
+        if(activePolygon != null) {
+            if(activePolygon!!.actualPoints != null) {
+                if(activePolygon!!.actualPoints.count() < 3) {
+                    deleteActivePolygon()
+                }
+            }
         }
         else
-            deletePolygon()
+            activePolygon = null
     }
 
-    private fun createPolygonFromPoints(geoPointsArray : ArrayList<GeoPoint>) {
+    fun addNewPolygon() {
+        val newPolygon = MyPolygon()
+        addExistingPolygon(newPolygon)
+        startEditPolygon(newPolygon)
+    }
+
+    fun addExistingPolygon(polygon: MyPolygon) {
         polygon.fillPaint.color = Color.parseColor("#1EFFE70E")
-        polygon.points = geoPointsArray
-        polygon.title = "Polygon 1"
-        map.overlays.add(0, polygon)
+        polygon.title = "Polygon ${polygons.count()}"
+        polygon.infoWindow = PolygonInfoWindow(map, polygon)
+        map.overlays.add(polygon)
     }
 
-    fun deletePolygon() {
+    fun addPointToActivePolygon(point: GeoPoint) {
+        activePolygon?.addPoint(point)
+    }
+
+    fun deleteActivePolygon() {
+        if(activePolygon != null) {
+            deletePolygon(activePolygon!!)
+        }
+    }
+
+    fun deletePolygon(polygon: MyPolygon) {
         if(map.overlays.contains(polygon)) {
             map.overlays.remove(polygon)
+        }
+    }
+
+    inner class PolygonInfoWindow(
+        private val map: MapView,
+        private val polygon: Polygon,
+
+        ) : InfoWindow(R.layout.polygon_layout, map) {
+
+        override fun onOpen(item: Any?) {
+            closeAllInfoWindowsOn(map)
+            val deleteButton = mView.findViewById<Button>(R.id.delete_button)
+            val textView = mView.findViewById<TextView>(R.id.text_view)
+            textView.text = getMarkerPos()
+
+            deleteButton.setOnClickListener {
+                deletePolygon()
+                closeAllInfoWindowsOn(map)
+            }
+            mView.setOnClickListener {
+                close()
+            }
+        }
+        private fun getMarkerPos(): String {
+            return "lat: ${polygon.actualPoints[0].latitude}\nlon: ${polygon.actualPoints[0].longitude}"
+        }
+        override fun onClose() {
+
         }
     }
 }
