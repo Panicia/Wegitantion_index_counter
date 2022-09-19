@@ -13,7 +13,7 @@ class MapEventsHandler(
     override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
         if (button.isEnabled) {
             if(p != null)
-                mapOverlayHandler.placeMarker(p)
+                mapOverlayHandler.addMarkerToActivePolygon(p)
         }
         return false
     }

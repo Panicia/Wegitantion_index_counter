@@ -17,7 +17,7 @@ class MapRepository(
     private val startPointAhrangelsk = GeoPoint(64.54008896758883, 40.51580601698074)
 
     init {
-        //saveState(getTestState(), defaultStateId)
+        saveState(getTestState(), defaultStateId)
     }
 
     private fun getTestState() : MapState {
@@ -72,7 +72,7 @@ class MapRepository(
                 val nextPolygonIndex = getNextPolygonIdFromDatabase()
                 val newPolygon = PolygonRepos(nextPolygonIndex, myPolygon.title, null, stateId)
                 mapDao.insertPolygon(newPolygon)
-                if(myPolygon.actualPoints.isNotEmpty()) {
+                if(!myPolygon.actualPoints.isNullOrEmpty()) {
                     for (point in myPolygon.actualPoints) {
                         val newMarker = MarkerRepos(0, point.latitude, point.longitude, nextPolygonIndex)
                         mapDao.insertMarker(newMarker)

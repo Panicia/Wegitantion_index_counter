@@ -3,7 +3,9 @@ package viewModels.mapViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import models.mapModel.MapRepository
 
@@ -23,20 +25,21 @@ class MapViewModel(
     }
 
     fun saveState(state: MapState) {
-        //viewModelScope.launch {
-            //withContext(Dispatchers.IO) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
                 mapRepository.saveState(state, mapRepository.defaultStateId)
-            //}
-        //}
+            }
+        }
     }
 
     fun updateState() {
-        //viewModelScope.launch {
-            //withContext(Dispatchers.IO) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
                 if (mapRepository.checkStateSavedIsExist()) {
-                    mapStateLive.value = mapRepository.loadState(mapRepository.defaultStateId)
+                    //mapStateLive.value = mapRepository.loadState(mapRepository.defaultStateId)
+                    mapStateLive.postValue(mapRepository.loadState(mapRepository.defaultStateId))
                 }
-            //}
-        //}
+            }
+        }
     }
 }

@@ -3,6 +3,7 @@ package views.mapView
 import android.graphics.Color
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.view.contains
 import com.example.wegitantionindexcounter.R
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
@@ -38,7 +39,7 @@ class PolygonsManager(
             activePolygon = null
     }
 
-    fun addNewPolygon() {
+    fun addNewPolygonAndStartEdit() {
         val newPolygon = MyPolygon()
         addExistingPolygon(newPolygon)
         startEditPolygon(newPolygon)
@@ -52,6 +53,11 @@ class PolygonsManager(
         map.overlays.add(polygon)
     }
 
+    fun redrawActivePolygon(): MyPolygon {
+        //activePolygon
+        return MyPolygon()
+    }
+
     fun deleteAllPolygonsFromOverlay() {
         for(overlay in map.overlays) {
             if(overlay is MyPolygon) {
@@ -60,8 +66,9 @@ class PolygonsManager(
         }
     }
 
-    fun addPointToActivePolygon(point: GeoPoint) {
+    fun addPointToActivePolygon(point: GeoPoint): MyPolygon {
         activePolygon?.addPoint(point)
+        return activePolygon!!
     }
 
     fun deleteActivePolygon() {
@@ -73,6 +80,9 @@ class PolygonsManager(
     fun deletePolygon(polygon: MyPolygon) {
         if(map.overlays.contains(polygon)) {
             map.overlays.remove(polygon)
+        }
+        if(polygons.contains(polygon)) {
+            polygons.remove(polygon)
         }
     }
 
@@ -92,7 +102,7 @@ class PolygonsManager(
             closeAllInfoWindowsOn(map)
             val deleteButton = mView.findViewById<Button>(R.id.delete_button)
             val textView = mView.findViewById<TextView>(R.id.text_view)
-            textView.text = getMarkerPos()
+            textView.text = getPolygonPos()
 
             deleteButton.setOnClickListener {
                 deletePolygon(polygon)
@@ -102,7 +112,7 @@ class PolygonsManager(
                 close()
             }
         }
-        private fun getMarkerPos(): String {
+        private fun getPolygonPos(): String {
             return "lat: ${polygon.actualPoints[0].latitude}\nlon: ${polygon.actualPoints[0].longitude}"
         }
         override fun onClose() {

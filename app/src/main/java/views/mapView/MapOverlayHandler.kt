@@ -13,7 +13,7 @@ class MapOverlayHandler(
     private val rotationGestureOverlay = RotationGestureOverlay(map)
     private val markersManager = MarkersManager(map)
     private val polygonsManager = PolygonsManager(map)
-    private val onMarkerDragListener = MyOnMarkerDragListener(markersManager, polygonsManager)
+    private val onMarkerDragListener = MyOnMarkerDragListener(map, markersManager, polygonsManager)
 
     init {
         markersManager.setMyOnMarkerDragListener(onMarkerDragListener)
@@ -33,12 +33,21 @@ class MapOverlayHandler(
         rotationGestureOverlay.isEnabled = false
     }
 
-    fun placeMarker(p: GeoPoint) {
-        markersManager.createMarker(p)
+    fun addNewActivePolygon() {
+        polygonsManager.addNewPolygonAndStartEdit()
     }
 
-    fun placePolygon(myPolygons: Array<MyPolygon>) {
-        polygonsManager
+    fun addMarkerToActivePolygon(point: GeoPoint) {
+        if(isPolygonEditing()) {
+            val polygon = polygonsManager.addPointToActivePolygon(point)
+            markersManager.redrawMarkersOfPolygon(polygon)
+        }
+    }
+
+    fun placeExistingPolygons(myPolygons: Array<MyPolygon>) {
+        for(polygon in myPolygons) {
+            polygonsManager.addExistingPolygon(polygon)
+        }
     }
 
     fun deleteAll() {

@@ -7,6 +7,7 @@ import com.example.wegitantionindexcounter.R
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
+import org.osmdroid.views.overlay.Polygon
 import org.osmdroid.views.overlay.infowindow.InfoWindow
 import viewModels.mapViewModel.MyPolygon
 
@@ -19,7 +20,6 @@ class MarkersManager(
     fun setMyOnMarkerDragListener(myOnMarkerDragListener: MyOnMarkerDragListener) {
         onMarkerDragListener = myOnMarkerDragListener
     }
-
 
     fun showMarkersOfPolygon(polygon: MyPolygon) {
         if(polygon.actualPoints != null) {
@@ -34,6 +34,12 @@ class MarkersManager(
 
     fun hideMarkersOfPolygon(polygon: MyPolygon) {
         deleteAllMarkers()
+    }
+
+    fun redrawMarkersOfPolygon(polygon: MyPolygon) {
+        hideMarkersOfPolygon(polygon)
+        showMarkersOfPolygon(polygon)
+        map.invalidate()
     }
 
     fun deleteAllMarkers() {
