@@ -11,12 +11,18 @@ class MapOverlayHandler(
     )  {
 
     private val rotationGestureOverlay = RotationGestureOverlay(map)
-    private val markersManager = MarkersManager(map, polygonsManager)
-    private val polygonsManager = PolygonsManager(map, markersManager)
+    private val markersManager = MarkersManager(map)
+    private val polygonsManager = PolygonsManager(map)
+    private val onMarkerDragListener = MyOnMarkerDragListener(markersManager, polygonsManager)
 
     init {
+        markersManager.setMyOnMarkerDragListener(onMarkerDragListener)
         map.overlays.add(rotationGestureOverlay)
         rotationGestureOverlay.isEnabled = false
+    }
+
+    fun isPolygonEditing() : Boolean {
+        return polygonsManager.isPolygonEditing()
     }
 
     fun rotateOn() {
@@ -37,7 +43,7 @@ class MapOverlayHandler(
 
     fun deleteAll() {
         markersManager.deleteAllMarkers()
-        polygonsManager.deletePolygon()
+        polygonsManager.deleteAllPolygons()
         InfoWindow.closeAllInfoWindowsOn(map)
         map.invalidate()
     }

@@ -15,7 +15,7 @@ class MapEventsHandler(
             if(p != null)
                 mapOverlayHandler.placeMarker(p)
         }
-        return true
+        return false
     }
     override fun longPressHelper(p: GeoPoint?): Boolean {
         return false

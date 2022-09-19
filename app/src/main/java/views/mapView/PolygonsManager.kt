@@ -12,11 +12,15 @@ import org.osmdroid.views.overlay.infowindow.InfoWindow
 import viewModels.mapViewModel.MyPolygon
 
 class PolygonsManager(
-    private val map : MapView,
-    private val markersManager: MarkersManager
+    private val map : MapView
     ) {
+
     private val polygons = ArrayList<MyPolygon>()
     var activePolygon : MyPolygon? = null
+
+    fun isPolygonEditing() : Boolean {
+        return activePolygon != null
+    }
 
     fun startEditPolygon(polygon: MyPolygon) {
         activePolygon = polygon
@@ -44,7 +48,16 @@ class PolygonsManager(
         polygon.fillPaint.color = Color.parseColor("#1EFFE70E")
         polygon.title = "Polygon ${polygons.count()}"
         polygon.infoWindow = PolygonInfoWindow(map, polygon)
+        polygons.add(polygon)
         map.overlays.add(polygon)
+    }
+
+    fun deleteAllPolygonsFromOverlay() {
+        for(overlay in map.overlays) {
+            if(overlay is MyPolygon) {
+                map.overlays.remove(overlay)
+            }
+        }
     }
 
     fun addPointToActivePolygon(point: GeoPoint) {
@@ -63,9 +76,15 @@ class PolygonsManager(
         }
     }
 
+    fun deleteAllPolygons() {
+        stopEditPolygon()
+        polygons.clear()
+        activePolygon = null
+    }
+
     inner class PolygonInfoWindow(
         private val map: MapView,
-        private val polygon: Polygon,
+        private val polygon: MyPolygon,
 
         ) : InfoWindow(R.layout.polygon_layout, map) {
 
@@ -76,7 +95,7 @@ class PolygonsManager(
             textView.text = getMarkerPos()
 
             deleteButton.setOnClickListener {
-                deletePolygon()
+                deletePolygon(polygon)
                 closeAllInfoWindowsOn(map)
             }
             mView.setOnClickListener {

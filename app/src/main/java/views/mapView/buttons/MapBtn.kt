@@ -13,13 +13,12 @@ open class MapBtn(
     var isEnabled = false
 
     fun pressButton() {
-        if(isEnabled) {
+        isEnabled = if(isEnabled) {
             turnButtonOff()
-            isEnabled = false
-        }
-        else {
+            false
+        } else {
             turnButtonOn()
-            isEnabled = true
+            true
         }
     }
 
