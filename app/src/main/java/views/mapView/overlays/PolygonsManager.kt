@@ -1,19 +1,18 @@
-package views.mapView
+package views.mapView.overlays
 
 import android.graphics.Color
 import android.widget.Button
 import android.widget.TextView
-import androidx.core.view.contains
 import com.example.wegitantionindexcounter.R
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
-import org.osmdroid.views.overlay.Marker
-import org.osmdroid.views.overlay.Polygon
 import org.osmdroid.views.overlay.infowindow.InfoWindow
 import viewModels.mapViewModel.MyPolygon
 
 class PolygonsManager(
-    private val map : MapView
+    private val map : MapView,
+    private val markersManager: MarkersManager
+
     ) {
 
     private val polygons = ArrayList<MyPolygon>()
@@ -23,7 +22,7 @@ class PolygonsManager(
         return activePolygon != null
     }
 
-    fun startEditPolygon(polygon: MyPolygon) {
+    private fun startEditPolygon(polygon: MyPolygon) {
         activePolygon = polygon
     }
 
@@ -34,6 +33,7 @@ class PolygonsManager(
                     deleteActivePolygon()
                 }
             }
+            activePolygon = null
         }
         else
             activePolygon = null
@@ -51,14 +51,14 @@ class PolygonsManager(
         polygon.infoWindow = PolygonInfoWindow(map, polygon)
         polygons.add(polygon)
         map.overlays.add(polygon)
+        map.invalidate()
     }
 
-    fun redrawActivePolygon(): MyPolygon {
-        //activePolygon
-        return MyPolygon()
+    fun redrawActivePolygonFromMarkers() {
+        activePolygon!!.points = markersManager.returnPoints()
     }
 
-    fun deleteAllPolygonsFromOverlay() {
+    private fun deleteAllPolygonsFromOverlay() {
         for(overlay in map.overlays) {
             if(overlay is MyPolygon) {
                 map.overlays.remove(overlay)
@@ -71,18 +71,22 @@ class PolygonsManager(
         return activePolygon!!
     }
 
-    fun deleteActivePolygon() {
+    private fun deleteActivePolygon() {
         if(activePolygon != null) {
             deletePolygon(activePolygon!!)
         }
     }
 
     fun deletePolygon(polygon: MyPolygon) {
+        markersManager.hideMarkersOfActivePolygon()
         if(map.overlays.contains(polygon)) {
             map.overlays.remove(polygon)
         }
         if(polygons.contains(polygon)) {
             polygons.remove(polygon)
+        }
+        if(polygon == activePolygon) {
+            activePolygon = null
         }
     }
 
@@ -90,6 +94,7 @@ class PolygonsManager(
         stopEditPolygon()
         polygons.clear()
         activePolygon = null
+        deleteAllPolygonsFromOverlay()
     }
 
     inner class PolygonInfoWindow(
@@ -101,8 +106,26 @@ class PolygonsManager(
         override fun onOpen(item: Any?) {
             closeAllInfoWindowsOn(map)
             val deleteButton = mView.findViewById<Button>(R.id.delete_button)
+            val editButton = mView.findViewById<Button>(R.id.edit_button)
+            val loadNDVAButton = mView.findViewById<Button>(R.id.load_NDVI_button)
             val textView = mView.findViewById<TextView>(R.id.text_view)
-            textView.text = getPolygonPos()
+            textView.text = polygon.title
+
+            editButton.setOnClickListener {
+                if(activePolygon != polygon) {
+                    if (activePolygon != null) {
+                        markersManager.hideMarkersOfActivePolygon()
+                    }
+                    markersManager.showMarkersOfPolygon(polygon)
+                    activePolygon = polygon
+                    startEditPolygon(polygon)
+                }
+                else {
+                    activePolygon = null
+                    markersManager.hideMarkersOfActivePolygon()
+                    stopEditPolygon()
+                }
+            }
 
             deleteButton.setOnClickListener {
                 deletePolygon(polygon)
@@ -112,9 +135,7 @@ class PolygonsManager(
                 close()
             }
         }
-        private fun getPolygonPos(): String {
-            return "lat: ${polygon.actualPoints[0].latitude}\nlon: ${polygon.actualPoints[0].longitude}"
-        }
+
         override fun onClose() {
 
         }

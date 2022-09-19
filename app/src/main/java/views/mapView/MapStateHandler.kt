@@ -10,9 +10,11 @@ import org.osmdroid.views.overlay.*
 import viewModels.mapViewModel.MapState
 import viewModels.mapViewModel.MapViewModel
 import viewModels.mapViewModel.MyPolygon
+import views.mapView.overlays.MapOverlayHandler
 
 class MapStateHandler(
-    private val mapViewModel : MapViewModel
+    private val mapViewModel : MapViewModel,
+    private val mapOverlayHandler: MapOverlayHandler
     ) {
 
     init {
@@ -25,7 +27,6 @@ class MapStateHandler(
     }
 
     fun loadMap(map : MapView, markersAdder: MapEventsHandler) {
-        //deleteMapOverlays(map)
         restoreMapFromState(map)
         setMapDefaultsBasis(map, markersAdder)
     }
@@ -33,7 +34,7 @@ class MapStateHandler(
     private fun restoreMapFromState(map : MapView) {
         if(mapViewModel.getMapStateLive().value!!.myPolygons.isNotEmpty()) {
             for (polygon in mapViewModel.getMapStateLive().value!!.myPolygons) {
-                map.overlays.add(polygon)
+                mapOverlayHandler.placeExistingPolygon(polygon)
             }
         }
         map.controller.setZoom(mapViewModel.getMapStateLive().value!!.mapZoom)

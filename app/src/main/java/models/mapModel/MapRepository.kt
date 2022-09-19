@@ -17,18 +17,17 @@ class MapRepository(
     private val startPointAhrangelsk = GeoPoint(64.54008896758883, 40.51580601698074)
 
     init {
-        saveState(getTestState(), defaultStateId)
+        //saveState(getTestState(), defaultStateId)
     }
 
     private fun getTestState() : MapState {
         val state = getDefaultState()
         val polygon = MyPolygon()
         polygon.title = "test polygon"
-        val points = arrayListOf<GeoPoint>(
+        val points = arrayListOf(
             startPointAhrangelsk,
             GeoPoint(65.5,40.5),
-            GeoPoint(66.5,41.5),
-            startPointAhrangelsk)
+            GeoPoint(66.5,41.5))
         polygon.points = points
         state.myPolygons.add(polygon)
         return state

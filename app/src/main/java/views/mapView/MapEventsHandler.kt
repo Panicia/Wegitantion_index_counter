@@ -3,6 +3,7 @@ package views.mapView
 import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.util.GeoPoint
 import views.mapView.buttons.MarkerAddAvailableBtn
+import views.mapView.overlays.MapOverlayHandler
 
 class MapEventsHandler(
     private val button : MarkerAddAvailableBtn,
@@ -13,7 +14,13 @@ class MapEventsHandler(
     override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
         if (button.isEnabled) {
             if(p != null)
-                mapOverlayHandler.addMarkerToActivePolygon(p)
+                if(mapOverlayHandler.isPolygonEditing()) {
+                    mapOverlayHandler.addMarkerToActivePolygon(p)
+                }
+                else {
+                    mapOverlayHandler.addNewActivePolygon()
+                    mapOverlayHandler.addMarkerToActivePolygon(p)
+                }
         }
         return false
     }

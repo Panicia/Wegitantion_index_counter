@@ -1,24 +1,15 @@
 package com.example.wegitantionindexcounter
 
 import android.os.Bundle
-import android.util.DisplayMetrics
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.Observer
 import androidx.preference.PreferenceManager
 import com.example.wegitantionindexcounter.databinding.ActivityMainBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.osmdroid.api.IMapController
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory
-import org.osmdroid.util.GeoPoint
-import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.MapView
-import org.osmdroid.views.overlay.*
 import org.osmdroid.config.Configuration
-import viewModels.mapViewModel.MapState
 import viewModels.mapViewModel.MapViewModel
-import views.mapView.MapOverlayHandler
+import views.mapView.overlays.MapOverlayHandler
 import views.mapView.MapEventsHandler
 import views.mapView.MapStateHandler
 import views.mapView.buttons.MarkerAddAvailableBtn
@@ -51,9 +42,9 @@ class MainActivity : AppCompatActivity() {
 
         mapStateHandler.loadMap(map, markersAdder)
 
-        mapViewModel.getMapStateLive().observe(this) {
+        /*mapViewModel.getMapStateLive().observe(this) {
             mapStateHandler.loadMap(map, markersAdder)
-        }
+        }*/
     }
 
     override fun onResume() {
@@ -99,6 +90,6 @@ class MainActivity : AppCompatActivity() {
         rotateMapBtn = RotateMapBtn(mapOverlayHandler, binding.buttonRotate)
         markerAddAvailableBtn = MarkerAddAvailableBtn(mapOverlayHandler, binding.buttonMarkersAddAvailable)
         markersAdder = MapEventsHandler(markerAddAvailableBtn, mapOverlayHandler)
-        mapStateHandler = MapStateHandler(mapViewModel)
+        mapStateHandler = MapStateHandler(mapViewModel, mapOverlayHandler)
     }
 }

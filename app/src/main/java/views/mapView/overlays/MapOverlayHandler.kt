@@ -1,4 +1,4 @@
-package views.mapView
+package views.mapView.overlays
 
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
@@ -11,14 +11,17 @@ class MapOverlayHandler(
     )  {
 
     private val rotationGestureOverlay = RotationGestureOverlay(map)
-    private val markersManager = MarkersManager(map)
-    private val polygonsManager = PolygonsManager(map)
-    private val onMarkerDragListener = MyOnMarkerDragListener(map, markersManager, polygonsManager)
+    private val markersManager = MarkersManager(map, this)
+    private val polygonsManager = PolygonsManager(map, markersManager)
+    private val onMarkerDragListener = MyOnMarkerDragListener(map, this)
 
     init {
-        markersManager.setMyOnMarkerDragListener(onMarkerDragListener)
         map.overlays.add(rotationGestureOverlay)
         rotationGestureOverlay.isEnabled = false
+    }
+
+    fun getOnMarkerDrugListener() : MyOnMarkerDragListener {
+        return onMarkerDragListener
     }
 
     fun isPolygonEditing() : Boolean {
@@ -37,6 +40,11 @@ class MapOverlayHandler(
         polygonsManager.addNewPolygonAndStartEdit()
     }
 
+    fun redrawActivePolygon() {
+        if(isPolygonEditing())
+            polygonsManager.redrawActivePolygonFromMarkers()
+    }
+
     fun addMarkerToActivePolygon(point: GeoPoint) {
         if(isPolygonEditing()) {
             val polygon = polygonsManager.addPointToActivePolygon(point)
@@ -44,14 +52,12 @@ class MapOverlayHandler(
         }
     }
 
-    fun placeExistingPolygons(myPolygons: Array<MyPolygon>) {
-        for(polygon in myPolygons) {
-            polygonsManager.addExistingPolygon(polygon)
-        }
+    fun placeExistingPolygon(polygon: MyPolygon) {
+        polygonsManager.addExistingPolygon(polygon)
     }
 
     fun deleteAll() {
-        markersManager.deleteAllMarkers()
+        markersManager.hideMarkersOfActivePolygon()
         polygonsManager.deleteAllPolygons()
         InfoWindow.closeAllInfoWindowsOn(map)
         map.invalidate()

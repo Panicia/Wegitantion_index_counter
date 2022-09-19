@@ -1,10 +1,7 @@
 package views.mapView.buttons
 
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.widget.Button
-import androidx.core.content.ContextCompat
-import views.mapView.MapOverlayHandler
+import views.mapView.overlays.MapOverlayHandler
 
 open class MapBtn(
     protected val mapOverlayHandler : MapOverlayHandler,
