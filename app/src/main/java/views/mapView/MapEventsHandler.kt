@@ -3,7 +3,7 @@ package views.mapView
 import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.util.GeoPoint
 import views.mapView.buttons.MarkerAddAvailableBtn
-import views.mapView.overlays.MapOverlayHandler
+import views.mapView.mapOverlays.MapOverlayHandler
 
 class MapEventsHandler(
     private val button : MarkerAddAvailableBtn,

@@ -1,7 +1,7 @@
 package views.mapView.buttons
 
 import android.widget.Button
-import views.mapView.overlays.MapOverlayHandler
+import views.mapView.mapOverlays.MapOverlayHandler
 
 open class MapBtn(
     protected val mapOverlayHandler : MapOverlayHandler,

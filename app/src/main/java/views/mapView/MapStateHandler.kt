@@ -10,7 +10,7 @@ import org.osmdroid.views.overlay.*
 import viewModels.mapViewModel.MapState
 import viewModels.mapViewModel.MapViewModel
 import viewModels.mapViewModel.MyPolygon
-import views.mapView.overlays.MapOverlayHandler
+import views.mapView.mapOverlays.MapOverlayHandler
 
 class MapStateHandler(
     private val mapViewModel : MapViewModel,

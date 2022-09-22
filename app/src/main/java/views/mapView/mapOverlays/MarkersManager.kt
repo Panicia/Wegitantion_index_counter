@@ -1,4 +1,4 @@
-package views.mapView.overlays
+package views.mapView.mapOverlays
 
 import android.widget.Button
 import android.widget.TextView

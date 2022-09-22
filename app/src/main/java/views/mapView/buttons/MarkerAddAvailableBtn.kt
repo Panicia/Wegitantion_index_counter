@@ -5,7 +5,7 @@ import android.graphics.Color
 import android.widget.Button
 import androidx.core.content.ContextCompat
 import com.example.wegitantionindexcounter.R
-import views.mapView.overlays.MapOverlayHandler
+import views.mapView.mapOverlays.MapOverlayHandler
 
 class MarkerAddAvailableBtn(mapOverlayHandler: MapOverlayHandler, btn : Button) : MapBtn(mapOverlayHandler, btn) {
 

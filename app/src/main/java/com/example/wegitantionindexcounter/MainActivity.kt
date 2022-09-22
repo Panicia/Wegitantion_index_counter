@@ -9,7 +9,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.osmdroid.views.MapView
 import org.osmdroid.config.Configuration
 import viewModels.mapViewModel.MapViewModel
-import views.mapView.overlays.MapOverlayHandler
+import views.mapView.mapOverlays.MapOverlayHandler
 import views.mapView.MapEventsHandler
 import views.mapView.MapStateHandler
 import views.mapView.buttons.MarkerAddAvailableBtn

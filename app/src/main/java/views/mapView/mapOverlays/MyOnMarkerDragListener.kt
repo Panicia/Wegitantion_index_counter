@@ -1,4 +1,4 @@
-package views.mapView.overlays
+package views.mapView.mapOverlays
 
 import androidx.core.content.ContextCompat
 import com.example.wegitantionindexcounter.R

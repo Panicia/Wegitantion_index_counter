@@ -1,4 +1,4 @@
-package views.mapView.overlays
+package views.mapView.mapOverlays
 
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
