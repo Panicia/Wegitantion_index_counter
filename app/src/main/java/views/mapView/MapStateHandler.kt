@@ -1,7 +1,11 @@
 package views.mapView
 
+import android.R
+import android.graphics.BitmapFactory
 import android.util.DisplayMetrics
 import android.view.View
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.CustomZoomButtonsController
@@ -11,6 +15,7 @@ import viewModels.mapViewModel.MapState
 import viewModels.mapViewModel.MapViewModel
 import viewModels.mapViewModel.MyPolygon
 import views.mapView.mapOverlays.MapOverlayHandler
+
 
 class MapStateHandler(
     private val mapViewModel : MapViewModel,
@@ -65,6 +70,20 @@ class MapStateHandler(
         scaleBarOverlay.setCentred(true)
         scaleBarOverlay.setScaleBarOffset(dm.widthPixels / 2, 10)
         map.overlays.add(scaleBarOverlay)
+
+
+
+        val myGroundOverlay = GroundOverlay()
+        val mapCenter1 = GeoPoint(64.54008896758883, 40.51580601698074)
+        val mapCenter2 = GeoPoint(64.54008896758883 - 1, 40.51580601698074 + 2)
+        myGroundOverlay.setPosition(mapCenter1, mapCenter2)
+        val d = BitmapFactory.decodeResource(map.resources, com.example.wegitantionindexcounter.R.drawable.keksa)
+        myGroundOverlay.image = d
+        myGroundOverlay.transparency = 0.25f
+        myGroundOverlay.bearing = 0f
+        map.overlays.add(myGroundOverlay)
+
+        map.invalidate()
     }
 
     private fun deleteMapOverlays(map: MapView) {
