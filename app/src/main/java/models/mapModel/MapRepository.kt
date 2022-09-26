@@ -1,8 +1,8 @@
 package models.mapModel
 
-import models.mapModel.entities.MarkerRepos
-import models.mapModel.entities.PolygonRepos
-import models.mapModel.entities.StateRepos
+import models.mapModel.dbEntities.MarkerRepos
+import models.mapModel.dbEntities.PolygonRepos
+import models.mapModel.dbEntities.StateRepos
 import org.osmdroid.util.GeoPoint
 import viewModels.mapViewModel.MapState
 import viewModels.mapViewModel.MyPolygon

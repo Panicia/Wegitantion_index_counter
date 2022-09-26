@@ -1,4 +1,4 @@
-package models.mapModel.entities
+package models.mapModel.dbEntities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey

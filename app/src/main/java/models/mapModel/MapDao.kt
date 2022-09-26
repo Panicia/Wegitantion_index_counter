@@ -1,9 +1,9 @@
 package models.mapModel
 
 import androidx.room.*
-import models.mapModel.entities.MarkerRepos
-import models.mapModel.entities.PolygonRepos
-import models.mapModel.entities.StateRepos
+import models.mapModel.dbEntities.MarkerRepos
+import models.mapModel.dbEntities.PolygonRepos
+import models.mapModel.dbEntities.StateRepos
 
 @Dao
 interface MapDao {

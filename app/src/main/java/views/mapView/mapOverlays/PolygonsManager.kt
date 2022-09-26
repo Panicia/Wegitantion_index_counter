@@ -1,17 +1,24 @@
 package views.mapView.mapOverlays
 
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.graphics.createBitmap
 import com.example.wegitantionindexcounter.R
+import com.squareup.picasso.Picasso
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.GroundOverlay
 import org.osmdroid.views.overlay.infowindow.InfoWindow
+import viewModels.mapViewModel.MapViewModel
 import viewModels.mapViewModel.MyPolygon
 
 class PolygonsManager(
     private val map : MapView,
-    private val markersManager: MarkersManager
+    private val markersManager: MarkersManager,
+    private val mapViewModel: MapViewModel
 
     ) {
 
@@ -127,10 +134,26 @@ class PolygonsManager(
                 }
             }
 
+            loadNDVAButton.setOnClickListener {
+                mapViewModel.getPolygonPicture(polygon)
+                mapViewModel.getPictureResponseLive().observe(map.context) {
+                    val myGroundOverlay = GroundOverlay()
+                    val mapCenter1 = mapViewModel.getPictureResponseLive().value?.point1
+                    val mapCenter2 = mapViewModel.getPictureResponseLive().value?.point2
+                    myGroundOverlay.setPosition(mapCenter1, mapCenter2)
+                    myGroundOverlay.image = d
+                    myGroundOverlay.transparency = 0.25f
+                    myGroundOverlay.bearing = 0f
+                    map.overlays.add(myGroundOverlay)
+                    map.invalidate()
+                }
+            }
+
             deleteButton.setOnClickListener {
                 deletePolygon(polygon)
                 closeAllInfoWindowsOn(map)
             }
+
             mView.setOnClickListener {
                 close()
             }

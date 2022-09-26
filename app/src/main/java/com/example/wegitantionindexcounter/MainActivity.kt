@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initAll() {
         map = binding.mapView
-        mapOverlayHandler = MapOverlayHandler(map)
+        mapOverlayHandler = MapOverlayHandler(map, mapViewModel)
         rotateMapBtn = RotateMapBtn(mapOverlayHandler, binding.buttonRotate)
         markerAddAvailableBtn = MarkerAddAvailableBtn(mapOverlayHandler, binding.buttonMarkersAddAvailable)
         markersAdder = MapEventsHandler(markerAddAvailableBtn, mapOverlayHandler)

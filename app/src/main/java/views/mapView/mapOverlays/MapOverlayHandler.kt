@@ -4,15 +4,18 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
 import org.osmdroid.views.overlay.infowindow.InfoWindow
+import viewModels.mapViewModel.MapViewModel
 import viewModels.mapViewModel.MyPolygon
 
 class MapOverlayHandler(
     private val map : MapView,
+    private val mapViewModel: MapViewModel
+
     )  {
 
     private val rotationGestureOverlay = RotationGestureOverlay(map)
     private val markersManager = MarkersManager(map, this)
-    private val polygonsManager = PolygonsManager(map, markersManager)
+    private val polygonsManager = PolygonsManager(map, markersManager, mapViewModel)
     private val onMarkerDragListener = MyOnMarkerDragListener(map, this)
 
     init {
