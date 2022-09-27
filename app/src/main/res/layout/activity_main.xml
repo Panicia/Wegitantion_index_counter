@@ -10,52 +10,79 @@
     <org.osmdroid.views.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        tools:visibility="gone" />
 
     <Button
         android:id="@+id/buttonDeleteAll"
+        style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:scaleX="1.5"
-        android:scaleY="1.5"
-        android:translationX="-10dp"
-        android:translationY="10dp"
+        app:backgroundTint="#007A0F0F"
+        app:cornerRadius="30dp"
+        app:icon="@drawable/delete"
+        app:iconSize="54dp"
+        app:iconTint="#F44336"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.953"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.027"
-        tools:ignore="SpeakableTextPresentCheck" />
-
-    <Button
-        android:id="@+id/buttonRotate"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:scaleX="1.5"
-        android:scaleY="1.5"
-        android:translationY="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.923"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonMarkersAddAvailable"
-        app:layout_constraintVertical_bias="0.061"
+        app:rippleColor="#66E91E63"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <Button
         android:id="@+id/buttonMarkersAddAvailable"
+        style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:scaleX="1.3"
-        android:scaleY="1.3"
-        android:translationY="20dp"
+        app:icon="@drawable/add_location"
+        app:iconSize="54dp"
+        app:iconTint="#66000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.923"
+        app:layout_constraintHorizontal_bias="0.953"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonDeleteAll"
-        app:layout_constraintVertical_bias="0.048"
+        app:layout_constraintVertical_bias="0.0"
+        app:rippleColor="#00FFFFFF"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <Button
+        android:id="@+id/buttonRotate"
+        style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        app:icon="@drawable/rotate"
+        app:iconSize="54dp"
+        app:iconTint="#66000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.953"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonMarkersAddAvailable"
+        app:layout_constraintVertical_bias="0.0"
+        app:rippleColor="#00FFFFFF"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <Button
+        android:id="@+id/buttonHome"
+        style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:insetLeft="1dp"
+        app:cornerRadius="40dp"
+        app:icon="@drawable/home"
+        app:iconSize="52dp"
+        app:iconTint="#3F51B5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.027"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.025"
+        app:rippleColor="#66009688"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <!--FrameLayout

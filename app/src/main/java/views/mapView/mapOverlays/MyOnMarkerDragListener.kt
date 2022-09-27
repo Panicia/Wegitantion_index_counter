@@ -16,10 +16,10 @@ class MyOnMarkerDragListener (
     }
 
     override fun onMarkerDragStart(marker: Marker?) {
-        marker?.icon = ContextCompat.getDrawable(map.context, R.drawable.geo_fill_icon_red)
+        marker?.icon = ContextCompat.getDrawable(map.context, R.drawable.marker_red)
     }
 
     override fun onMarkerDragEnd(marker: Marker?) {
-        marker?.icon = ContextCompat.getDrawable(map.context, R.drawable.geo_fill_icon_185595)
+        marker?.icon = ContextCompat.getDrawable(map.context, R.drawable.marker)
     }
 }

@@ -67,7 +67,8 @@ class MarkersManager(
     private fun setMarkerDefaults(marker: Marker, p: GeoPoint, markerNumber: Int) {
         marker.position = p
         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-        marker.icon = ContextCompat.getDrawable(map.context, R.drawable.geo_fill_icon_185595)
+        marker.icon = ContextCompat.getDrawable(map.context, R.drawable.marker)
+        //marker.icon = ContextCompat.getDrawable(map.context, R.drawable.geo_fill_icon_185595)
         marker.title = "Point ${markerNumber + 1}"
         marker.isDraggable = true
         marker.setOnMarkerDragListener(mapOverlayHandler.getOnMarkerDrugListener())

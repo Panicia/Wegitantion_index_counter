@@ -18,6 +18,9 @@ class MapStateHandler(
     private val mapOverlayHandler: MapOverlayHandler
     ) {
 
+    private val defaultZoom = 10.0
+    private val startPointAhrangelsk = GeoPoint(64.54008896758883, 40.51580601698074)
+
     init {
         mapViewModel.updateState()
     }
@@ -30,6 +33,11 @@ class MapStateHandler(
     fun loadMap(map : MapView, markersAdder: MapEventsHandler) {
         restoreMapFromState(map)
         setMapDefaultsBasis(map, markersAdder)
+    }
+
+    fun setHome(map: MapView) {
+        map.controller.setCenter(startPointAhrangelsk)
+        map.controller.setZoom(defaultZoom)
     }
 
     private fun restoreMapFromState(map : MapView) {

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Vegetation Index Counter</string>
+    <string name="app_name">NDVA evaluator</string>
     <string name="button2">RotateOn</string>
     <string name="text1">Something</string>
     <string name="delete">Delete</string>

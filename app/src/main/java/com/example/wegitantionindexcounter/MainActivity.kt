@@ -66,6 +66,9 @@ class MainActivity : AppCompatActivity() {
         binding.buttonDeleteAll.setOnClickListener {
             mapOverlayHandler.deleteAll()
         }
+        binding.buttonHome.setOnClickListener {
+            mapStateHandler.setHome(map)
+        }
         map.onResume()
     }
 
