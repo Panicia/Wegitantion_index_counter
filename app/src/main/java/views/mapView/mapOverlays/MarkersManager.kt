@@ -8,7 +8,7 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.infowindow.InfoWindow
-import viewModels.mapViewModel.MyPolygon
+import views.mapView.myClasses.MyPolygon
 
 class MarkersManager(
     private val map: MapView,

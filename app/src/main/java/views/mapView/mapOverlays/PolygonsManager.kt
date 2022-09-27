@@ -1,25 +1,22 @@
 package views.mapView.mapOverlays
 
-import android.graphics.BitmapFactory
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.widget.Button
 import android.widget.TextView
-import androidx.core.graphics.createBitmap
 import com.example.wegitantionindexcounter.R
-import com.squareup.picasso.Picasso
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import models.mapModel.apiEntities.PictureApiResponse
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
-import org.osmdroid.views.overlay.GroundOverlay
 import org.osmdroid.views.overlay.infowindow.InfoWindow
 import viewModels.mapViewModel.MapViewModel
-import viewModels.mapViewModel.MyPolygon
+import views.mapView.myClasses.MyPolygon
 
 class PolygonsManager(
     private val map : MapView,
     private val markersManager: MarkersManager,
-    private val mapViewModel: MapViewModel
-
+    private val mapViewModel: MapViewModel,
+    private val bitmapManager: BitmapManager
     ) {
 
     private val polygons = ArrayList<MyPolygon>()
@@ -46,8 +43,28 @@ class PolygonsManager(
             activePolygon = null
     }
 
+    private fun getLocalPolygonId(): Int {
+        var polygonNumber = 0
+        for(overlay in map.overlays) {
+            if(overlay is MyPolygon) {
+                polygonNumber++
+            }
+        }
+        return polygonNumber
+    }
+
+    fun setPictureToPolygon(pictureApiResponse: PictureApiResponse, bitmap: Bitmap) {
+        for(polygon in polygons) {
+            if(polygon.id == pictureApiResponse.id) {
+                polygon.image = bitmap
+                polygon.pictureApiResponse = pictureApiResponse
+                break
+            }
+        }
+    }
+
     fun addNewPolygonAndStartEdit() {
-        val newPolygon = MyPolygon()
+        val newPolygon = MyPolygon(getLocalPolygonId())
         addExistingPolygon(newPolygon)
         startEditPolygon(newPolygon)
     }
@@ -117,6 +134,7 @@ class PolygonsManager(
             val loadNDVAButton = mView.findViewById<Button>(R.id.load_NDVI_button)
             val textView = mView.findViewById<TextView>(R.id.text_view)
             textView.text = polygon.title
+            var loadNDVAButtonEnabled = false
 
             editButton.setOnClickListener {
                 if(activePolygon != polygon) {
@@ -135,17 +153,17 @@ class PolygonsManager(
             }
 
             loadNDVAButton.setOnClickListener {
-                mapViewModel.getPolygonPicture(polygon)
-                mapViewModel.getPictureResponseLive().observe(map.context) {
-                    val myGroundOverlay = GroundOverlay()
-                    val mapCenter1 = mapViewModel.getPictureResponseLive().value?.point1
-                    val mapCenter2 = mapViewModel.getPictureResponseLive().value?.point2
-                    myGroundOverlay.setPosition(mapCenter1, mapCenter2)
-                    myGroundOverlay.image = d
-                    myGroundOverlay.transparency = 0.25f
-                    myGroundOverlay.bearing = 0f
-                    map.overlays.add(myGroundOverlay)
-                    map.invalidate()
+                if(!loadNDVAButtonEnabled) {
+                    if (polygon.image == null) {
+                        mapViewModel.getPolygonPicture(polygon)
+                    } else {
+                        bitmapManager.placeBitmap(polygon.pictureApiResponse!!, polygon.image!!)
+                    }
+                    loadNDVAButtonEnabled = true
+                }
+                else {
+                    bitmapManager.hideBitmap(polygon)
+                    loadNDVAButtonEnabled = false
                 }
             }
 

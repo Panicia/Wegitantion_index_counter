@@ -1,11 +1,13 @@
 package views.mapView.mapOverlays
 
+import android.graphics.Bitmap
+import models.mapModel.apiEntities.PictureApiResponse
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
 import org.osmdroid.views.overlay.infowindow.InfoWindow
 import viewModels.mapViewModel.MapViewModel
-import viewModels.mapViewModel.MyPolygon
+import views.mapView.myClasses.MyPolygon
 
 class MapOverlayHandler(
     private val map : MapView,
@@ -13,14 +15,20 @@ class MapOverlayHandler(
 
     )  {
 
+    private val bitmapManager = BitmapManager(map)
     private val rotationGestureOverlay = RotationGestureOverlay(map)
     private val markersManager = MarkersManager(map, this)
-    private val polygonsManager = PolygonsManager(map, markersManager, mapViewModel)
+    private val polygonsManager = PolygonsManager(map, markersManager, mapViewModel, bitmapManager)
     private val onMarkerDragListener = MyOnMarkerDragListener(map, this)
 
     init {
         map.overlays.add(rotationGestureOverlay)
         rotationGestureOverlay.isEnabled = false
+    }
+
+    fun placeBitmap(pictureApiResponse: PictureApiResponse, bitmap: Bitmap) {
+        bitmapManager.placeBitmap(pictureApiResponse, bitmap)
+        polygonsManager.setPictureToPolygon(pictureApiResponse, bitmap)
     }
 
     fun getOnMarkerDrugListener() : MyOnMarkerDragListener {

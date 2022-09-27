@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.preference.PreferenceManager
 import com.example.wegitantionindexcounter.databinding.ActivityMainBinding
+import com.squareup.picasso.Picasso
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.osmdroid.views.MapView
 import org.osmdroid.config.Configuration
@@ -12,6 +13,7 @@ import viewModels.mapViewModel.MapViewModel
 import views.mapView.mapOverlays.MapOverlayHandler
 import views.mapView.MapEventsHandler
 import views.mapView.MapStateHandler
+import views.mapView.myClasses.PictureTarget
 import views.mapView.buttons.MarkerAddAvailableBtn
 import views.mapView.buttons.RotateMapBtn
 
@@ -45,6 +47,11 @@ class MainActivity : AppCompatActivity() {
         /*mapViewModel.getMapStateLive().observe(this) {
             mapStateHandler.loadMap(map, markersAdder)
         }*/
+
+        mapViewModel.getPictureResponseLive().observe(this) {
+            val pictureTarget = PictureTarget(mapOverlayHandler, mapViewModel.getPictureResponseLive().value!!)
+            Picasso.get().load(mapViewModel.getPictureResponseLive().value?.url).into(pictureTarget)
+        }
     }
 
     override fun onResume() {

@@ -1,11 +1,7 @@
 package views.mapView
 
-import android.R
-import android.graphics.BitmapFactory
 import android.util.DisplayMetrics
 import android.view.View
-import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.CustomZoomButtonsController
@@ -13,7 +9,7 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.*
 import viewModels.mapViewModel.MapState
 import viewModels.mapViewModel.MapViewModel
-import viewModels.mapViewModel.MyPolygon
+import views.mapView.myClasses.MyPolygon
 import views.mapView.mapOverlays.MapOverlayHandler
 
 

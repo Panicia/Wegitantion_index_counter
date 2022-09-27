@@ -1,5 +1,7 @@
 package viewModels.mapViewModel
 
+import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,8 +11,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import models.mapModel.ApiRequestHandler
 import models.mapModel.MapRepository
-import models.mapModel.apiEntities.PictureApiRequest
 import models.mapModel.apiEntities.PictureApiResponse
+import views.mapView.myClasses.MyPolygon
 
 class MapViewModel(
     private val mapRepository : MapRepository,
@@ -35,10 +37,15 @@ class MapViewModel(
     }
 
     fun getPolygonPicture(polygon: MyPolygon) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                pictureResponseLive.postValue(apiRequestHandler.sendRequest(polygon))
+        try {
+            viewModelScope.launch {
+                withContext(Dispatchers.IO) {
+                    pictureResponseLive.postValue(apiRequestHandler.sendRequest(polygon))
+                }
             }
+        }
+        catch (e:Exception) {
+            Log.d("TEST", e.toString())
         }
     }
 

@@ -5,7 +5,7 @@ import models.mapModel.dbEntities.PolygonRepos
 import models.mapModel.dbEntities.StateRepos
 import org.osmdroid.util.GeoPoint
 import viewModels.mapViewModel.MapState
-import viewModels.mapViewModel.MyPolygon
+import views.mapView.myClasses.MyPolygon
 
 class MapRepository(
     private val mapDao: MapDao
@@ -22,7 +22,7 @@ class MapRepository(
 
     private fun getTestState() : MapState {
         val state = getDefaultState()
-        val polygon = MyPolygon()
+        val polygon = MyPolygon(0)
         polygon.title = "test polygon"
         val points = arrayListOf(
             startPointAhrangelsk,
@@ -92,7 +92,7 @@ class MapRepository(
             val polygons = mapDao.getPolygonsFromState(stateId)
             if (polygons.isNotEmpty()) {
                 for (polygon in polygons) {
-                    val myPolygon = MyPolygon()
+                    val myPolygon = MyPolygon(polygon.id.toInt())
                     myPolygon.title = polygon.name
                     val markersFromPoly = mapDao.getMarkersFromPoly(polygon.id)
                     if (markersFromPoly.isNotEmpty()) {
