@@ -38,6 +38,7 @@ class MapStateHandler(
     fun setHome(map: MapView) {
         map.controller.setCenter(startPointAhrangelsk)
         map.controller.setZoom(defaultZoom)
+        map.mapOrientation = 0f
     }
 
     private fun restoreMapFromState(map : MapView) {
@@ -66,7 +67,7 @@ class MapStateHandler(
         val mapEventsOverlay = MapEventsOverlay(markersAdder)
         map.overlays.add(mapEventsOverlay)
         map.setLayerType(View.LAYER_TYPE_HARDWARE, null)
-        map.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE)
+        map.setTileSource(TileSourceFactory.MAPNIK)
         map.setMultiTouchControls(true)
         map.zoomController.setVisibility(CustomZoomButtonsController.Visibility.NEVER)
         val dm : DisplayMetrics = map.context.resources.displayMetrics

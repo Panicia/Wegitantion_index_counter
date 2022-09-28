@@ -6,14 +6,40 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/text_view"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:layout_marginStart="5dp"
-        android:text="Title"
-        android:textColor="@color/black" />
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/editText"
+            style="@style/Widget.AppCompat.EditText"
+            android:layout_width="155dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Name" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/closeButton"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
+            android:layout_width="40dp"
+            android:layout_height="36dp"
+            android:layout_weight="0"
+            android:insetTop="6dp"
+            app:backgroundTint="#00FFFFFF"
+            app:icon="@drawable/close"
+            app:iconSize="30dp"
+            app:iconTint="#F44336"
+            app:rippleColor="#00FFFFFF" />
+    </LinearLayout>
 
     <Space
         android:layout_width="match_parent"

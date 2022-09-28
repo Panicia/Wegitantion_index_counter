@@ -2,8 +2,11 @@ package views.mapView.mapOverlays
 
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.util.Log
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import com.example.wegitantionindexcounter.R
 import models.mapModel.apiEntities.PictureApiResponse
 import org.osmdroid.util.GeoPoint
@@ -71,7 +74,8 @@ class PolygonsManager(
 
     fun addExistingPolygon(polygon: MyPolygon) {
         polygon.fillPaint.color = Color.parseColor("#1EFFE70E")
-        polygon.title = "Polygon ${polygons.count()}"
+        if(polygon.title == null)
+            polygon.title = "Polygon ${polygons.count()}"
         polygon.infoWindow = PolygonInfoWindow(map, polygon)
         polygons.add(polygon)
         map.overlays.add(polygon)
@@ -132,9 +136,18 @@ class PolygonsManager(
             val deleteButton = mView.findViewById<Button>(R.id.delete_button)
             val editButton = mView.findViewById<Button>(R.id.edit_button)
             val loadNDVAButton = mView.findViewById<Button>(R.id.load_NDVI_button)
-            val textView = mView.findViewById<TextView>(R.id.text_view)
-            textView.text = polygon.title
+            val closeButton = mView.findViewById<Button>(R.id.closeButton)
+            val editText = mView.findViewById<EditText>(R.id.editText)
+            editText.setText(polygon.title)
             var loadNDVAButtonEnabled = false
+
+            editText.setOnFocusChangeListener { _, _ ->
+                polygon.title = editText.text.toString()
+            }
+
+            closeButton.setOnClickListener {
+                close()
+            }
 
             editButton.setOnClickListener {
                 if(activePolygon != polygon) {
