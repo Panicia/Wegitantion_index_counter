@@ -84,7 +84,7 @@ val netModule = module {
 
     fun provideRetrofit(factory: Gson, client: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("http://192.168.0.107:5000")
+            .baseUrl("http://192.168.0.114:5000")
             .addConverterFactory(GsonConverterFactory.create(factory))
             .client(client)
             .build()
